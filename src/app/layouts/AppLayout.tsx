@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router';
 import {
   LayoutDashboard, Package, UserCheck, ArrowLeftRight,
   CalendarDays, Wrench, ClipboardCheck, BarChart3,
   Bell, Settings, Search, LogOut, ChevronRight, Menu, X,
 } from 'lucide-react';
+import { isAuthenticated, getStoredUser, apiLogout, type UserInfo } from '@/app/lib/api';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, Package, UserCheck, ArrowLeftRight,
@@ -58,13 +59,44 @@ const breadcrumbLabels: Record<string, string> = {
   settings: 'Settings',
 };
 
+function getUserInitials(name: string): string {
+  return name
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function getRoleLabel(roleName: string): string {
+  switch (roleName) {
+    case 'admin': return 'Administrator';
+    case 'manager': return 'Manager';
+    case 'employee': return 'Employee';
+    default: return roleName;
+  }
+}
+
 interface SidebarNavProps {
   isOpen: boolean;
   onClose: () => void;
+  user: UserInfo | null;
 }
 
-function SidebarNav({ isOpen, onClose }: SidebarNavProps) {
+function SidebarNav({ isOpen, onClose, user }: SidebarNavProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const displayName = user?.full_name ?? localStorage.getItem('af_user_name') ?? 'User';
+  const displayRole = user?.role?.name
+    ? getRoleLabel(user.role.name)
+    : localStorage.getItem('af_user_role') ?? 'Employee';
+  const initials = getUserInitials(displayName);
+
+  function handleLogout() {
+    apiLogout();
+    navigate('/login');
+  }
 
   return (
     <>
@@ -159,7 +191,7 @@ function SidebarNav({ isOpen, onClose }: SidebarNavProps) {
                       onMouseEnter={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.backgroundColor = 'rgba(20, 33, 61, 0.04)';
-                          e.currentTarget.style.color = 'var(--text-primary)';
+                           e.currentTarget.style.color = 'var(--text-primary)';
                         }
                       }}
                       onMouseLeave={(e) => {
@@ -192,31 +224,30 @@ function SidebarNav({ isOpen, onClose }: SidebarNavProps) {
                 color: 'var(--text-inverse)',
               }}
             >
-              AC
+              {initials}
             </div>
             <div className="flex-1 min-w-0">
               <div
                 className="truncate text-[0.8125rem] font-medium"
                 style={{ color: 'var(--text-primary)' }}
               >
-                Alicia Chen
+                {displayName}
               </div>
               <div
                 className="truncate text-[0.6875rem]"
                 style={{ color: 'var(--text-tertiary)' }}
               >
-                Operations Director
+                {displayRole}
               </div>
             </div>
-            <Link
-              to="/"
-              onClick={onClose}
-              className="flex size-7 items-center justify-center rounded-[8px] transition-colors hover:bg-[var(--surface)]"
+            <button
+              onClick={handleLogout}
+              className="flex size-7 items-center justify-center rounded-[8px] transition-colors hover:bg-[var(--surface)] cursor-pointer border-0 bg-transparent"
               style={{ color: 'var(--text-tertiary)' }}
               title="Sign out"
             >
               <LogOut className="size-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </aside>
@@ -327,10 +358,22 @@ function TopBar({ onMenuClick }: TopBarProps) {
 
 export default function AppLayout() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const [user, setUser] = useState<UserInfo | null>(null);
+
+  useEffect(() => {
+    // Auth guard — redirect to login if not authenticated
+    if (!isAuthenticated()) {
+      navigate('/login', { replace: true });
+      return;
+    }
+    const stored = getStoredUser();
+    if (stored) setUser(stored);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--canvas)' }}>
-      <SidebarNav isOpen={isMobileOpen} onClose={() => setIsMobileOpen(false)} />
+      <SidebarNav isOpen={isMobileOpen} onClose={() => setIsMobileOpen(false)} user={user} />
       <div className="pl-0 lg:pl-[256px]">
         <TopBar onMenuClick={() => setIsMobileOpen(true)} />
         <main className="p-4 sm:p-8">
