@@ -1,0 +1,311 @@
+/* ========================================================================
+   AssetFlow — Design System Tokens
+   Enterprise Asset & Resource Management Platform
+   
+   Color Philosophy: Elegance through restraint.
+   The interface derives its quality from typography and spacing,
+   not from color. Color is used for status and emphasis only.
+   ======================================================================== */
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* ── Typography ─────────────────────────────────────────────────────── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+  --font-size: 14px;
+
+  /* ── Canvas & Surface System ────────────────────────────────────────── */
+  --canvas: #FCFBF8;           /* Snow White — page background */
+  --surface: #F6F4EF;          /* Porcelain — card/section backgrounds */
+  --elevated: #FFFFFF;         /* White — raised elements */
+  --sidebar-bg: #F3F1EB;       /* Sidebar background */
+
+  /* ── Primary & Accent ───────────────────────────────────────────────── */
+  --primary-navy: #172A45;     /* Oxford Navy — primary actions, text emphasis */
+  --primary-navy-hover: #1E3A5F;
+  --primary-navy-active: #0F1D30;
+  --accent-brass: #B08D57;     /* Heritage Brass — sparingly, premium CTAs */
+  --accent-brass-hover: #C4A06A;
+  --accent-brass-muted: rgba(176, 141, 87, 0.12);
+
+  /* ── Text System ────────────────────────────────────────────────────── */
+  --text-primary: #1A1A1A;
+  --text-secondary: #5E6673;
+  --text-tertiary: #8E95A2;
+  --text-inverse: #FCFBF8;
+  --text-on-primary: #FFFFFF;
+
+  /* ── Border System ──────────────────────────────────────────────────── */
+  --border-default: #DDD8CF;
+  --border-subtle: #E8E4DC;
+  --border-strong: #C5BFB3;
+  --border-focus: #172A45;
+
+  /* ── Status Colors ──────────────────────────────────────────────────── */
+  --status-success: #295943;         /* Forest */
+  --status-success-bg: #F0F7F4;
+  --status-success-border: #C5E0D3;
+  --status-warning: #A66B00;         /* Burnished Amber */
+  --status-warning-bg: #FFF8ED;
+  --status-warning-border: #EDD5A3;
+  --status-danger: #7D1F2B;          /* Oxblood */
+  --status-danger-bg: #FDF2F3;
+  --status-danger-border: #E8C4C9;
+  --status-info: #355C7D;            /* Slate Blue */
+  --status-info-bg: #F0F4F8;
+  --status-info-border: #C2D3E3;
+
+  /* ── Spacing Scale (8px base) ───────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ── Radius Scale ───────────────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 10px;      /* Buttons, Inputs */
+  --radius-lg: 12px;      /* Cards */
+  --radius-xl: 16px;      /* Modals, large panels */
+  --radius-2xl: 20px;     /* Hero sections */
+
+  /* ── Shadow Scale (minimal, almost invisible) ───────────────────────── */
+  --shadow-xs: 0 1px 2px rgba(23, 42, 69, 0.04);
+  --shadow-sm: 0 2px 4px rgba(23, 42, 69, 0.04), 0 1px 2px rgba(23, 42, 69, 0.02);
+  --shadow-md: 0 4px 12px rgba(23, 42, 69, 0.06), 0 1px 3px rgba(23, 42, 69, 0.03);
+  --shadow-lg: 0 8px 24px rgba(23, 42, 69, 0.06), 0 2px 6px rgba(23, 42, 69, 0.03);
+  --shadow-xl: 0 16px 40px rgba(23, 42, 69, 0.06);
+
+  /* ── Transitions ────────────────────────────────────────────────────── */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* ── shadcn/ui compatibility tokens ─────────────────────────────────── */
+  --background: var(--canvas);
+  --foreground: var(--text-primary);
+  --card: var(--elevated);
+  --card-foreground: var(--text-primary);
+  --popover: var(--elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--primary-navy);
+  --primary-foreground: var(--text-on-primary);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--primary-navy);
+  --muted: var(--surface);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--surface);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--status-danger);
+  --destructive-foreground: #FFFFFF;
+  --border: var(--border-default);
+  --input: var(--border-default);
+  --input-background: var(--canvas);
+  --switch-background: var(--border-default);
+  --ring: var(--primary-navy);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+
+  /* Charts */
+  --chart-1: var(--primary-navy);
+  --chart-2: var(--status-info);
+  --chart-3: var(--status-success);
+  --chart-4: var(--accent-brass);
+  --chart-5: var(--status-warning);
+
+  --radius: 10px;
+
+  /* Sidebar */
+  --sidebar: var(--sidebar-bg);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--primary-navy);
+  --sidebar-primary-foreground: var(--text-on-primary);
+  --sidebar-accent: rgba(23, 42, 69, 0.06);
+  --sidebar-accent-foreground: var(--primary-navy);
+  --sidebar-border: var(--border-default);
+  --sidebar-ring: var(--primary-navy);
+}
+
+/* ── Tailwind CSS v4 Theme Integration ──────────────────────────────── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* AssetFlow semantic colors for Tailwind */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-navy: var(--primary-navy);
+  --color-navy-hover: var(--primary-navy-hover);
+  --color-brass: var(--accent-brass);
+  --color-brass-hover: var(--accent-brass-hover);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-border-default: var(--border-default);
+  --color-border-subtle: var(--border-subtle);
+  --color-success: var(--status-success);
+  --color-success-bg: var(--status-success-bg);
+  --color-warning: var(--status-warning);
+  --color-warning-bg: var(--status-warning-bg);
+  --color-danger: var(--status-danger);
+  --color-danger-bg: var(--status-danger-bg);
+  --color-info: var(--status-info);
+  --color-info-bg: var(--status-info-bg);
+}
+
+/* ── Base Layer ────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    font-size: var(--font-size);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    line-height: 1.6;
+    letter-spacing: -0.006em;
+  }
+
+  /* Editorial typography hierarchy */
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--primary-navy);
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--primary-navy);
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--text-primary);
+  }
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-primary);
+  }
+
+  p {
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+
+  button {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  input, textarea, select {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    font-family: var(--font-sans);
+  }
+
+  /* Tabular numbers for data */
+  .tabular-nums,
+  td,
+  th,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-strong);
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(23, 42, 69, 0.12);
+    color: var(--primary-navy);
+  }
+}
