@@ -1,7 +1,3 @@
-Perfect! Let me create an enhanced README with GIF references and emoji animations! 🎬
-
----
-
 # 🚀 POPPY - Enterprise Asset Management System
 
 > **AI-Powered Enterprise Asset & Resource Management Platform**
