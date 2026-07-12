@@ -1,4 +1,5 @@
-import { roles, integrations, Role, Integration } from '@/app/data/mockData';
+import { useState } from 'react';
+import { roles as initialRoles, integrations as initialIntegrations, Role, Integration } from '@/app/data/mockData';
 import StatusBadge from '@/app/components/StatusBadge';
 import PageHeader from '@/app/components/PageHeader';
 import { Button } from '@/app/components/ui/button';
@@ -24,6 +25,7 @@ import {
   Plus,
   Edit,
   CheckCircle2,
+  X,
 } from 'lucide-react';
 
 const auditLogData = [
@@ -88,6 +90,55 @@ const passwordRequirements = [
 ];
 
 export default function SettingsPage() {
+  // Org state
+  const [orgName, setOrgName] = useState('Meridian Industries');
+  const [industry, setIndustry] = useState('Technology & Manufacturing');
+  const [contactEmail, setContactEmail] = useState('operations@meridian.com');
+  const [address, setAddress] = useState('1200 Innovation Drive, Suite 400\nSan Francisco, CA 94105');
+  const [orgSaved, setOrgSaved] = useState(false);
+
+  // Roles state
+  const [localRoles, setLocalRoles] = useState(initialRoles);
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [newRoleName, setNewRoleName] = useState('');
+  const [newRolePerms, setNewRolePerms] = useState('');
+
+  // Security state
+  const [twoFactor, setTwoFactor] = useState(true);
+  const [timeout, setTimeoutVal] = useState('30');
+
+  // Integrations state
+  const [localIntegrations, setLocalIntegrations] = useState(initialIntegrations);
+
+  function handleSaveOrg(e: React.FormEvent) {
+    e.preventDefault();
+    setOrgSaved(true);
+    setTimeout(() => setOrgSaved(false), 3000);
+  }
+
+  function handleAddRole(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newRoleName) return;
+    const newRole: Role = {
+      id: String(localRoles.length + 1),
+      name: newRoleName,
+      users: 0,
+      permissions: newRolePerms || 'Read-only access to directory',
+    };
+    setLocalRoles(prev => [...prev, newRole]);
+    setIsRoleModalOpen(false);
+    setNewRoleName('');
+    setNewRolePerms('');
+  }
+
+  function toggleIntegration(id: string) {
+    setLocalIntegrations(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      const nextStatus = item.status === 'Connected' ? 'Disconnected' : 'Connected';
+      return { ...item, status: nextStatus, lastSync: new Date().toLocaleTimeString() };
+    }));
+  }
+
   return (
     <div>
       <PageHeader
@@ -138,22 +189,28 @@ export default function SettingsPage() {
               borderColor: 'var(--border-default)',
             }}
           >
-            <div className="space-y-5 max-w-lg">
+            <form onSubmit={handleSaveOrg} className="space-y-5 max-w-lg">
+              {orgSaved && (
+                <div className="flex items-center gap-2 rounded-[10px] border p-3 text-xs text-[var(--status-success)] bg-[var(--status-success-bg)] border-[var(--status-success-border)]">
+                  <CheckCircle2 className="size-4" />
+                  Organization details updated successfully.
+                </div>
+              )}
               <div className="space-y-2">
                 <Label style={{ color: 'var(--text-primary)' }}>
                   Organization Name
                 </Label>
-                <Input defaultValue="Meridian Industries" />
+                <Input value={orgName} onChange={(e) => setOrgName(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label style={{ color: 'var(--text-primary)' }}>Industry</Label>
-                <Input defaultValue="Technology & Manufacturing" />
+                <Input value={industry} onChange={(e) => setIndustry(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label style={{ color: 'var(--text-primary)' }}>
                   Primary Contact
                 </Label>
-                <Input defaultValue="operations@meridian.com" />
+                <Input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label style={{ color: 'var(--text-primary)' }}>Address</Label>
@@ -164,19 +221,21 @@ export default function SettingsPage() {
                     borderColor: 'var(--border-default)',
                     color: 'var(--text-primary)',
                   }}
-                  defaultValue="1200 Innovation Drive, Suite 400&#10;San Francisco, CA 94105"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  required
                 />
               </div>
-              <Button className="mt-2">Save Changes</Button>
-            </div>
+              <Button type="submit" className="mt-2">Save Changes</Button>
+            </form>
           </div>
         </TabsContent>
 
         {/* ── Roles & Permissions ───────────────────────────────────── */}
         <TabsContent value="roles">
           <div className="mb-4 flex justify-end">
-            <Button>
-              <Plus />
+            <Button onClick={() => setIsRoleModalOpen(true)}>
+              <Plus className="size-4" />
               Add Role
             </Button>
           </div>
@@ -213,7 +272,7 @@ export default function SettingsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {roles.map((role: Role) => (
+                {localRoles.map((role: Role) => (
                   <TableRow
                     key={role.id}
                     style={{ borderColor: 'var(--border-default)' }}
@@ -244,7 +303,7 @@ export default function SettingsPage() {
                       {role.permissions}
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" onClick={() => alert(`Editing permissions for ${role.name}`)}>
                         <Edit className="size-4" />
                       </Button>
                     </TableCell>
@@ -253,6 +312,61 @@ export default function SettingsPage() {
               </TableBody>
             </Table>
           </div>
+
+          {/* ── Add Role Modal ────────────────────────────────────── */}
+          {isRoleModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
+              <div 
+                className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+                style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="text-[1rem] font-semibold" style={{ color: 'var(--primary-navy)' }}>
+                    Add Custom Role
+                  </h3>
+                  <button 
+                    onClick={() => setIsRoleModalOpen(false)}
+                    className="rounded-lg p-1 hover:bg-[var(--surface)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+
+                <form onSubmit={handleAddRole} className="space-y-4">
+                  <div>
+                    <Label htmlFor="roleName">Role Name</Label>
+                    <Input 
+                      id="roleName" 
+                      placeholder="e.g. Facility Manager" 
+                      value={newRoleName} 
+                      onChange={(e) => setNewRoleName(e.target.value)}
+                      required 
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="rolePerms">Permissions Outline</Label>
+                    <Input 
+                      id="rolePerms" 
+                      placeholder="e.g. Read-write access to booking and maintenance logs" 
+                      value={newRolePerms} 
+                      onChange={(e) => setNewRolePerms(e.target.value)}
+                      required 
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button variant="secondary" type="button" onClick={() => setIsRoleModalOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">
+                      Create Role
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </TabsContent>
 
         {/* ── Security ─────────────────────────────────────────────── */}
@@ -470,7 +584,7 @@ export default function SettingsPage() {
         {/* ── Integrations ─────────────────────────────────────────── */}
         <TabsContent value="integrations">
           <div className="grid grid-cols-2 gap-4">
-            {integrations.map((integration: Integration) => (
+            {localIntegrations.map((integration: Integration) => (
               <div
                 key={integration.id}
                 className="rounded-xl border p-5"
@@ -498,7 +612,7 @@ export default function SettingsPage() {
                       {integration.category}
                     </span>
                   </div>
-                  <StatusBadge status={integration.status as 'Connected' | 'Disconnected'} />
+                  <StatusBadge status={integration.status as any} />
                 </div>
                 <p
                   className="text-xs mb-4"
@@ -506,8 +620,12 @@ export default function SettingsPage() {
                 >
                   Last sync: {integration.lastSync}
                 </p>
-                <Button variant="secondary" size="sm">
-                  Configure
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={() => toggleIntegration(integration.id)}
+                >
+                  {integration.status === 'Connected' ? 'Disconnect' : 'Connect'}
                 </Button>
               </div>
             ))}
@@ -517,3 +635,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

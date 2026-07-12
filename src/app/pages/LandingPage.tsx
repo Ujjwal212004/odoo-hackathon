@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useNavigate, useLocation } from 'react-router';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
 import { Card } from '@/app/components/ui/card';
@@ -38,12 +38,13 @@ function PreviewShell({ children, title = 'Dashboard' }: { children: React.React
           <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#F59E0B' }} />
           <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#22C55E' }} />
         </span>
-        <span
-          className="text-[0.6875rem] font-medium tracking-wide ml-1"
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="text-[0.6875rem] font-medium tracking-wide ml-1 border-0 bg-transparent p-0 cursor-pointer outline-none hover:text-[var(--primary-navy)] transition-colors"
           style={{ color: 'var(--text-tertiary)' }}
         >
           {title}
-        </span>
+        </button>
       </div>
       {/* Body */}
       <div className="p-4">{children}</div>
@@ -85,6 +86,21 @@ function MiniKpiCard({ label, value, accent }: { label: string; value: string; a
 /*  Landing Page                                                       */
 /* ------------------------------------------------------------------ */
 export default function LandingPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--canvas)' }}>
       {/* ============================================================ */}
@@ -96,7 +112,7 @@ export default function LandingPage() {
       >
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 no-underline">
+          <Link to="/" onClick={handleLogoClick} className="flex items-center gap-3 no-underline">
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold"
               style={{ backgroundColor: 'var(--primary-navy)', color: '#FFFFFF' }}
@@ -129,11 +145,14 @@ export default function LandingPage() {
             </div>
             <div className="flex items-center gap-3">
               <Link to="/dashboard">
-                <Button variant="outline" size="sm">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hover:bg-[var(--accent-brass)] hover:text-white hover:border-[var(--accent-brass)] transition-colors duration-200"
+                >
                   Explore Platform
                 </Button>
               </Link>
-              <Button size="sm">Request Demo</Button>
             </div>
           </div>
         </div>
@@ -164,11 +183,13 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link to="/dashboard">
-                  <Button size="lg">Explore Platform</Button>
+                  <Button
+                    size="lg"
+                    className="hover:bg-[var(--accent-brass)] hover:border-[var(--accent-brass)] transition-colors duration-200"
+                  >
+                    Explore Platform
+                  </Button>
                 </Link>
-                <Button variant="outline" size="lg">
-                  Request Demo
-                </Button>
               </div>
 
               {/* Trust indicators */}
@@ -551,19 +572,11 @@ export default function LandingPage() {
               <Link to="/dashboard">
                 <Button
                   size="lg"
-                  className="bg-white hover:bg-white/90"
-                  style={{ color: 'var(--primary-navy)' }}
+                  className="bg-white text-[var(--primary-navy)] hover:bg-[var(--accent-brass)] hover:text-white border border-transparent transition-all duration-200"
                 >
                   Explore Platform
                 </Button>
               </Link>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white/30 text-white hover:bg-white/10"
-              >
-                Request Demo
-              </Button>
             </div>
           </div>
         </section>
@@ -574,7 +587,10 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <footer className="border-t" style={{ borderColor: 'var(--border-default)' }}>
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-3 border-0 bg-transparent cursor-pointer p-0 text-left outline-none hover:opacity-80 transition-opacity"
+          >
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
               style={{ backgroundColor: 'var(--primary-navy)', color: '#FFFFFF' }}
@@ -587,7 +603,7 @@ export default function LandingPage() {
             >
               ASSETFLOW
             </span>
-          </div>
+          </button>
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
             <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
               © {new Date().getFullYear()} AssetFlow. All rights reserved.

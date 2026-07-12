@@ -1,8 +1,11 @@
-import { bookings } from '@/app/data/mockData';
+import { useState } from 'react';
+import { bookings as initialBookings } from '@/app/data/mockData';
 import StatusBadge from '@/app/components/StatusBadge';
 import PageHeader from '@/app/components/PageHeader';
 import { Button } from '@/app/components/ui/button';
-import { Plus, Clock, MapPin, ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
+import { Plus, Clock, MapPin, ChevronLeft, ChevronRight, CalendarDays, X } from 'lucide-react';
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
 
@@ -61,13 +64,44 @@ function bookingBorder(status: string) {
 }
 
 export default function BookingPage() {
-  const calendarBookings = bookings.filter(
+  const [localBookings, setLocalBookings] = useState(initialBookings);
+  
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [resource, setResource] = useState('Conference Room A');
+  const [bookedBy, setBookedBy] = useState('');
+  const [bookingDate, setBookingDate] = useState('2025-07-14');
+  const [startTime, setStartTime] = useState('11:00');
+  const [endTime, setEndTime] = useState('12:00');
+  const [location, setLocation] = useState('North Wing — Floor 3');
+
+  const calendarBookings = localBookings.filter(
     (b) => dayIndex(b.date) >= 0 && dayIndex(b.date) <= 4
   );
 
-  const upcomingBookings = bookings
+  const upcomingBookings = localBookings
     .filter((b) => b.status !== 'Cancelled')
     .sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime));
+
+  function handleCreateBooking(e: React.FormEvent) {
+    e.preventDefault();
+    if (!resource || !bookedBy) return;
+
+    const newBooking = {
+      id: `BKG-0${localBookings.length + 1}`,
+      resource: `${resource} — ${location}`,
+      bookedBy,
+      date: bookingDate,
+      startTime,
+      endTime,
+      status: 'Confirmed' as const,
+      location,
+    };
+
+    setLocalBookings(prev => [...prev, newBooking]);
+    setIsModalOpen(false);
+    setBookedBy('');
+  }
 
   return (
     <div>
@@ -75,7 +109,7 @@ export default function BookingPage() {
         title="Booking"
         description="Schedule and manage shared resources"
         actions={
-          <Button>
+          <Button onClick={() => setIsModalOpen(true)}>
             <Plus className="size-4" />
             Book Resource
           </Button>
@@ -94,7 +128,7 @@ export default function BookingPage() {
         >
           {/* Calendar header */}
           <div className="flex items-center justify-between mb-5">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={() => alert('Previous week booking archives are not loaded.')}>
               <ChevronLeft className="size-4" />
             </Button>
             <div className="flex items-center gap-2">
@@ -109,7 +143,7 @@ export default function BookingPage() {
                 July 14 — 18, 2025
               </span>
             </div>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={() => alert('Next week booking scheduler is not loaded.')}>
               <ChevronRight className="size-4" />
             </Button>
           </div>
@@ -149,10 +183,9 @@ export default function BookingPage() {
 
             {/* Time rows */}
             {HOURS.map((hour, rowIdx) => (
-              <>
+              <div key={`row-${hour}`} style={{ display: 'contents' }}>
                 {/* Time label */}
                 <div
-                  key={`label-${hour}`}
                   className="flex items-start justify-end pr-3 pt-1 text-[0.6875rem]"
                   style={{
                     color: 'var(--text-tertiary)',
@@ -176,7 +209,7 @@ export default function BookingPage() {
                     }}
                   />
                 ))}
-              </>
+              </div>
             ))}
 
             {/* Booking blocks (positioned absolutely within the grid) */}
@@ -291,6 +324,123 @@ export default function BookingPage() {
           </div>
         </div>
       </div>
+
+      {/* ── Book Resource Modal ──────────────────────────────── */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
+          <div 
+            className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+            style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-[1rem] font-semibold" style={{ color: 'var(--primary-navy)' }}>
+                Book Shared Resource
+              </h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-lg p-1 hover:bg-[var(--surface)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateBooking} className="space-y-4">
+              <div>
+                <Label htmlFor="bkgResource">Resource Name</Label>
+                <select 
+                  id="bkgResource"
+                  value={resource}
+                  onChange={(e) => setResource(e.target.value)}
+                  className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                >
+                  <option value="Conference Room A">Conference Room A</option>
+                  <option value="Conference Room B">Conference Room B</option>
+                  <option value="Projector Kit">Projector Kit — Portable</option>
+                  <option value="Video Production Kit">Video Production Kit</option>
+                </select>
+              </div>
+
+              <div>
+                <Label htmlFor="bkgLocation">Location</Label>
+                <Input 
+                  id="bkgLocation" 
+                  value={location} 
+                  onChange={(e) => setLocation(e.target.value)}
+                  required 
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="bkgBookedBy">Booked By</Label>
+                <Input 
+                  id="bkgBookedBy" 
+                  placeholder="Alicia Chen" 
+                  value={bookedBy} 
+                  onChange={(e) => setBookedBy(e.target.value)}
+                  required 
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <Label htmlFor="bkgDate">Date</Label>
+                  <select 
+                    id="bkgDate"
+                    value={bookingDate}
+                    onChange={(e) => setBookingDate(e.target.value)}
+                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                  >
+                    <option value="2025-07-14">July 14</option>
+                    <option value="2025-07-15">July 15</option>
+                    <option value="2025-07-16">July 16</option>
+                    <option value="2025-07-17">July 17</option>
+                    <option value="2025-07-18">July 18</option>
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="bkgStart">Start Time</Label>
+                  <select 
+                    id="bkgStart"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                  >
+                    {HOURS.map(h => {
+                      const t = `${String(h).padStart(2, '0')}:00`;
+                      return <option key={t} value={t}>{t}</option>;
+                    })}
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="bkgEnd">End Time</Label>
+                  <select 
+                    id="bkgEnd"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                  >
+                    {HOURS.map(h => {
+                      const t = `${String(h).padStart(2, '0')}:00`;
+                      return <option key={t} value={t}>{t}</option>;
+                    })}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  Confirm Booking
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

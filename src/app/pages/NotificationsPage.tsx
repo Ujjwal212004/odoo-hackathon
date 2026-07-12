@@ -1,4 +1,4 @@
-import { notifications } from '@/app/data/mockData';
+import { notifications as initialNotifications } from '@/app/data/mockData';
 import type { NotificationType } from '@/app/data/mockData';
 import PageHeader from '@/app/components/PageHeader';
 import { Button } from '@/app/components/ui/button';
@@ -52,12 +52,21 @@ const typeConfig: Record<
 };
 
 export default function NotificationsPage() {
+  const [localNotifications, setLocalNotifications] = useState(initialNotifications);
   const [filter, setFilter] = useState<string>('all');
 
   const filteredNotifications =
     filter === 'all'
-      ? notifications
-      : notifications.filter((n) => n.type === filter);
+      ? localNotifications
+      : localNotifications.filter((n) => n.type === filter);
+
+  function handleMarkAllRead() {
+    setLocalNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  }
+
+  function handleToggleRead(id: string) {
+    setLocalNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  }
 
   return (
     <div>
@@ -65,8 +74,8 @@ export default function NotificationsPage() {
         title="Notifications"
         description="Stay informed about your organization's operations"
         actions={
-          <Button variant="secondary">
-            <CheckCircle2 />
+          <Button variant="secondary" onClick={handleMarkAllRead}>
+            <CheckCircle2 className="size-4" />
             Mark all as read
           </Button>
         }
@@ -106,7 +115,8 @@ export default function NotificationsPage() {
           return (
             <div
               key={notification.id}
-              className="rounded-xl border p-5 flex gap-4"
+              onClick={() => handleToggleRead(notification.id)}
+              className="rounded-xl border p-5 flex gap-4 cursor-pointer hover:shadow-xs transition-all"
               style={{
                 backgroundColor: notification.read
                   ? 'var(--canvas)'
@@ -128,7 +138,7 @@ export default function NotificationsPage() {
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <p
-                  className="text-sm font-medium"
+                  className="text-sm font-semibold"
                   style={{ color: 'var(--text-primary)' }}
                 >
                   {notification.title}
@@ -151,7 +161,7 @@ export default function NotificationsPage() {
               {!notification.read && (
                 <div className="shrink-0 mt-1">
                   <span
-                    className="block size-2 rounded-full"
+                    className="block size-2 rounded-full animate-pulse"
                     style={{ backgroundColor: 'var(--primary-navy)' }}
                   />
                 </div>

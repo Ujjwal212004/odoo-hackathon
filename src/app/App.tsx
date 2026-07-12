@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { ArrowRight, ArrowUpRight, BadgeCheck, BarChart3, Bell, Boxes, Building2, CalendarDays, CheckCircle2, Circle, ClipboardList, FileText, LayoutGrid, MapPin, PackageCheck, ScanLine, Search, Settings, ShieldCheck, Sparkles, Users, Workflow, Wrench } from "lucide-react";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
@@ -99,14 +100,14 @@ function PreviewShell() {
     <div className="rounded-[24px] border border-[#DDD8CF] bg-white p-4 shadow-[0_16px_40px_rgba(23,42,69,0.06)]">
       <div className="flex gap-4">
         <aside className="hidden w-44 shrink-0 rounded-[16px] border border-[#DDD8CF] bg-[#F3F1EB] p-3 lg:flex lg:flex-col lg:gap-2">
-          {[
+          {([
             [LayoutGrid, "Overview"],
             [Building2, "Organization"],
             [Boxes, "Assets"],
             [CalendarDays, "Bookings"],
             [FileText, "Reports"],
             [Settings, "Settings"],
-          ].map(([Icon, label]) => (
+          ] as [React.ComponentType<{ className?: string }>, string][]).map(([Icon, label]) => (
             <div key={label} className="flex items-center gap-2 rounded-[10px] px-2 py-2 text-sm text-[#5E6673]">
               <Icon className="size-4" />
               <span>{label}</span>
@@ -194,8 +195,9 @@ export default function App() {
           <a className="transition hover:text-[#172A45]" href="#design-system">Design System</a>
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="secondary">Explore Platform</Button>
-          <Button>Request Demo</Button>
+          <Link to="/dashboard">
+            <Button variant="secondary" className="hover:bg-[var(--accent-brass)] hover:text-white hover:border-[var(--accent-brass)] transition-colors duration-200">Explore Platform</Button>
+          </Link>
         </div>
       </header>
 
@@ -212,8 +214,9 @@ export default function App() {
               AssetFlow helps organizations track, allocate, maintain, audit, and analyze their assets through one calm, dependable platform.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg">Request Demo</Button>
-              <Button size="lg" variant="secondary">Explore Platform</Button>
+              <Link to="/dashboard">
+                <Button size="lg" variant="secondary" className="hover:bg-[var(--accent-brass)] hover:text-white hover:border-[var(--accent-brass)] transition-colors duration-200">Explore Platform</Button>
+              </Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-4 text-sm text-[#5E6673]">
               <div className="flex items-center gap-2"><BadgeCheck className="size-4 text-[#295943]" />Procurement to retirement</div>
@@ -417,8 +420,9 @@ export default function App() {
               </h2>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button className="bg-[#FCFBF8] text-[#172A45] hover:bg-[#FFFFFF]">Request Demo</Button>
-              <Button variant="secondary" className="border-[#B08D57] bg-[#172A45] text-[#FCFBF8] hover:bg-[#213A58]">Explore Platform</Button>
+              <Link to="/dashboard">
+                <Button variant="secondary" className="border-[#B08D57] bg-[#172A45] text-[#FCFBF8] hover:bg-[var(--accent-brass)] hover:text-white hover:border-[var(--accent-brass)] transition-colors duration-200">Explore Platform</Button>
+              </Link>
             </div>
           </div>
         </section>

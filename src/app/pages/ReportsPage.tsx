@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   utilizationByCategory,
   assetHealthDistribution,
@@ -24,12 +25,28 @@ import {
 import { Download, Calendar } from 'lucide-react';
 
 export default function ReportsPage() {
+  const [selectedMonth, setSelectedMonth] = useState('July 2025');
+
   const executiveMetrics = [
     { label: 'Total Assets', value: kpiData.totalAssets.toLocaleString() },
-    { label: 'Utilization Rate', value: `${kpiData.utilizationRate}%` },
-    { label: 'Active Maintenance', value: kpiData.underMaintenance.toString() },
-    { label: 'Due for Retirement', value: '23' },
+    { 
+      label: 'Utilization Rate', 
+      value: selectedMonth === 'July 2025' ? `${kpiData.utilizationRate}%` : '79%' 
+    },
+    { 
+      label: 'Active Maintenance', 
+      value: selectedMonth === 'July 2025' ? kpiData.underMaintenance.toString() : '95' 
+    },
+    { label: 'Due for Retirement', value: selectedMonth === 'July 2025' ? '23' : '31' },
   ];
+
+  function handleExport() {
+    alert(`Exporting analytical reports for ${selectedMonth} as PDF... Saved to disk.`);
+  }
+
+  function toggleMonth() {
+    setSelectedMonth(prev => prev === 'July 2025' ? 'June 2025' : 'July 2025');
+  }
 
   return (
     <div>
@@ -38,8 +55,9 @@ export default function ReportsPage() {
         description="Enterprise analytics and operational insights"
         actions={
           <>
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium border"
+            <button
+              onClick={toggleMonth}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium border cursor-pointer hover:bg-[var(--surface)] transition-all"
               style={{
                 backgroundColor: 'var(--elevated)',
                 color: 'var(--text-secondary)',
@@ -47,15 +65,16 @@ export default function ReportsPage() {
               }}
             >
               <Calendar className="size-3.5" />
-              July 2025
-            </span>
-            <Button variant="secondary">
-              <Download />
+              {selectedMonth} (Toggle)
+            </button>
+            <Button variant="secondary" onClick={handleExport}>
+              <Download className="size-4" />
               Export
             </Button>
           </>
         }
       />
+
 
       {/* ── Executive Summary ────────────────────────────────────────── */}
       <div className="grid grid-cols-4 gap-4 mb-6">

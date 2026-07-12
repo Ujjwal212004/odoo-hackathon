@@ -69,7 +69,10 @@ function SidebarNav() {
       }}
     >
       {/* Brand */}
-      <div className="flex items-center gap-3 px-5 py-5">
+      <Link
+        to="/"
+        className="flex items-center gap-3 px-5 py-5 no-underline hover:opacity-80 transition-opacity"
+      >
         <div
           className="flex size-9 items-center justify-center rounded-lg text-xs font-semibold"
           style={{
@@ -97,7 +100,7 @@ function SidebarNav() {
             Enterprise Platform
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-2">

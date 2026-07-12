@@ -7,12 +7,59 @@ import { CheckCircle2, Shield, Clock, BarChart3 } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
+  
+  // Login State
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  
+  // Signup State
+  const [fullName, setFullName] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  
+  // Error / Status Message
+  const [errorMsg, setErrorMsg] = useState('');
 
-  function handleSubmit(e: FormEvent) {
+  function handleLoginSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!loginEmail || !loginPassword) {
+      setErrorMsg('Please fill in all credentials.');
+      return;
+    }
+    
+    // Store session
     localStorage.setItem('af_auth', 'true');
+    localStorage.setItem('af_user_name', 'Alicia Chen');
+    localStorage.setItem('af_company_name', 'Meridian Industries');
+    localStorage.setItem('af_user_role', 'Operations Director');
+    setErrorMsg('');
+    navigate('/dashboard');
+  }
+
+  function handleSignupSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!fullName || !signupEmail || !companyName || !signupPassword || !confirmPassword) {
+      setErrorMsg('Please fill in all fields.');
+      return;
+    }
+    if (signupPassword !== confirmPassword) {
+      setErrorMsg('Passwords do not match.');
+      return;
+    }
+    if (signupPassword.length < 8) {
+      setErrorMsg('Password must be at least 8 characters.');
+      return;
+    }
+
+    // Store custom session
+    localStorage.setItem('af_auth', 'true');
+    localStorage.setItem('af_user_name', fullName);
+    localStorage.setItem('af_company_name', companyName);
+    localStorage.setItem('af_user_role', 'Administrator');
+    setErrorMsg('');
     navigate('/dashboard');
   }
 
@@ -27,7 +74,7 @@ export default function LoginPage() {
       >
         <div className="max-w-md space-y-10">
           {/* Logo mark */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 animate-fade-in">
             <div
               className="w-11 h-11 rounded-lg flex items-center justify-center text-base font-bold"
               style={{ backgroundColor: 'var(--primary-navy)', color: '#FFFFFF' }}
@@ -44,7 +91,7 @@ export default function LoginPage() {
 
           {/* Heading */}
           <h1
-            className="text-[2rem] font-semibold leading-[1.15] tracking-[-0.02em]"
+            className="text-[2rem] font-semibold leading-[1.15] tracking-[-0.02em] animate-fade-in stagger-1"
             style={{ color: 'var(--primary-navy)' }}
           >
             Operational clarity for every asset your organization owns.
@@ -68,8 +115,8 @@ export default function LoginPage() {
                 title: 'Actionable insights',
                 desc: 'Utilization reports, depreciation tracking, and compliance dashboards.',
               },
-            ].map((point) => (
-              <div key={point.title} className="flex items-start gap-4">
+            ].map((point, index) => (
+              <div key={point.title} className={`flex items-start gap-4 animate-fade-in stagger-${index + 2}`}>
                 <div
                   className="w-10 h-10 rounded-[10px] border flex items-center justify-center shrink-0"
                   style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--elevated)' }}
@@ -89,7 +136,7 @@ export default function LoginPage() {
           </div>
 
           {/* Bottom note */}
-          <div className="flex items-center gap-2 pt-2">
+          <div className="flex items-center gap-2 pt-2 animate-fade-in stagger-5">
             <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: 'var(--status-success)' }} />
             <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
               Trusted by operations teams managing 50,000+ assets worldwide
@@ -99,7 +146,7 @@ export default function LoginPage() {
       </div>
 
       {/* ============================================================ */}
-      {/*  RIGHT PANEL – Sign-in form                                  */}
+      {/*  RIGHT PANEL – Sign-in / Sign-up form                        */}
       {/* ============================================================ */}
       <div
         className="w-full lg:w-[480px] shrink-0 border-l flex items-center justify-center px-8 py-12"
@@ -128,68 +175,179 @@ export default function LoginPage() {
               className="text-xl font-semibold"
               style={{ color: 'var(--primary-navy)' }}
             >
-              Sign in to AssetFlow
+              {isSignUp ? 'Create an account' : 'Sign in to AssetFlow'}
             </h2>
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              Enter your credentials to access the platform.
+              {isSignUp
+                ? 'Get started with a 14-day free enterprise trial.'
+                : 'Enter your credentials to access the platform.'}
             </p>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
+          {/* Error messages */}
+          {errorMsg && (
+            <div
+              className="rounded-[10px] border p-3 text-xs font-medium"
+              style={{
+                backgroundColor: 'var(--status-danger-bg)',
+                borderColor: 'var(--status-danger-border)',
+                color: 'var(--status-danger)',
+              }}
+            >
+              {errorMsg}
             </div>
+          )}
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+          {/* Forms */}
+          {!isSignUp ? (
+            <form onSubmit={handleLoginSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="loginEmail">Email address</Label>
+                <Input
+                  id="loginEmail"
+                  type="email"
+                  placeholder="you@company.com"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="loginPassword">Password</Label>
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); setErrorMsg('Password reset is not enabled in this sandbox.'); }}
+                    className="text-xs font-medium no-underline"
+                    style={{ color: 'var(--status-info)' }}
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+                <Input
+                  id="loginPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+
+              <Button type="submit" className="w-full" size="lg">
+                Sign in
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={handleSignupSubmit} className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="fullName">Full Name</Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="Alicia Chen"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="signupEmail">Email address</Label>
+                <Input
+                  id="signupEmail"
+                  type="email"
+                  placeholder="you@company.com"
+                  value={signupEmail}
+                  onChange={(e) => setSignupEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="companyName">Company Name</Label>
+                <Input
+                  id="companyName"
+                  type="text"
+                  placeholder="Meridian Industries"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="signupPassword">Password</Label>
+                <Input
+                  id="signupPassword"
+                  type="password"
+                  placeholder="Min. 8 characters"
+                  value={signupPassword}
+                  onChange={(e) => setSignupPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <Button type="submit" className="w-full mt-2" size="lg">
+                Create Account
+              </Button>
+            </form>
+          )}
+
+          {/* Toggle button */}
+          <div className="text-center text-xs" style={{ color: 'var(--text-tertiary)' }}>
+            {isSignUp ? (
+              <>
+                Already have an account?{' '}
                 <a
                   href="#"
-                  className="text-xs font-medium no-underline"
-                  style={{ color: 'var(--status-info)' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsSignUp(false);
+                    setErrorMsg('');
+                  }}
+                  className="font-medium no-underline"
+                  style={{ color: 'var(--primary-navy)' }}
                 >
-                  Forgot password?
+                  Sign in
                 </a>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-            </div>
-
-            <Button type="submit" className="w-full" size="lg">
-              Sign in
-            </Button>
-          </form>
-
-          {/* Footer help text */}
-          <p className="text-center text-xs" style={{ color: 'var(--text-tertiary)' }}>
-            Don&apos;t have an account?{' '}
-            <a
-              href="#"
-              className="font-medium no-underline"
-              style={{ color: 'var(--primary-navy)' }}
-            >
-              Contact your administrator
-            </a>
-          </p>
+              </>
+            ) : (
+              <>
+                Don&apos;t have an account yet?{' '}
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsSignUp(true);
+                    setErrorMsg('');
+                  }}
+                  className="font-medium no-underline"
+                  style={{ color: 'var(--primary-navy)' }}
+                >
+                  Sign up
+                </a>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

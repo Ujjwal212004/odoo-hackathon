@@ -1,4 +1,6 @@
-import { auditItems } from '@/app/data/mockData';
+import { useState } from 'react';
+import { auditItems as initialAuditItems } from '@/app/data/mockData';
+import type { AuditStatus } from '@/app/data/mockData';
 import StatusBadge from '@/app/components/StatusBadge';
 import PageHeader from '@/app/components/PageHeader';
 import { Button } from '@/app/components/ui/button';
@@ -14,12 +16,14 @@ import { Checkbox } from '@/app/components/ui/checkbox';
 import { FileText, Download } from 'lucide-react';
 
 export default function AuditPage() {
-  const verifiedCount = auditItems.filter((i) => i.status === 'Verified').length;
-  const pendingCount = auditItems.filter((i) => i.status === 'Pending').length;
-  const missingCount = auditItems.filter((i) => i.status === 'Missing').length;
-  const discrepancyCount = auditItems.filter((i) => i.status === 'Discrepancy').length;
+  const [items, setItems] = useState(initialAuditItems);
 
-  const totalItems = auditItems.length;
+  const verifiedCount = items.filter((i) => i.status === 'Verified').length;
+  const pendingCount = items.filter((i) => i.status === 'Pending').length;
+  const missingCount = items.filter((i) => i.status === 'Missing').length;
+  const discrepancyCount = items.filter((i) => i.status === 'Discrepancy').length;
+
+  const totalItems = items.length;
   const progressPercent = totalItems > 0 ? Math.round((verifiedCount / totalItems) * 100) : 0;
 
   const summaryCards = [
@@ -29,6 +33,24 @@ export default function AuditPage() {
     { label: 'Discrepancy', count: discrepancyCount, borderColor: 'var(--status-warning)' },
   ];
 
+  function handleVerifyToggle(id: string, isChecked: boolean) {
+    setItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== id) return item;
+        return {
+          ...item,
+          status: isChecked ? ('Verified' as AuditStatus) : ('Pending' as AuditStatus),
+          verifiedBy: isChecked ? 'Alicia Chen' : '—',
+          verifiedDate: isChecked ? new Date().toISOString().split('T')[0] : '—',
+        };
+      })
+    );
+  }
+
+  function handleGenerateReport() {
+    alert(`Audit Report Generated:\nVerified: ${verifiedCount}\nPending: ${pendingCount}\nMissing: ${missingCount}\nDiscrepancies: ${discrepancyCount}\nSaved to system logs.`);
+  }
+
   return (
     <div>
       <PageHeader
@@ -36,8 +58,8 @@ export default function AuditPage() {
         description="Verify asset inventory and resolve discrepancies"
         actions={
           <>
-            <Button>
-              <FileText />
+            <Button onClick={handleGenerateReport}>
+              <FileText className="size-4" />
               Generate Report
             </Button>
           </>
@@ -49,7 +71,7 @@ export default function AuditPage() {
         {summaryCards.map((card) => (
           <div
             key={card.label}
-            className="rounded-xl border p-4"
+            className="rounded-xl border p-4 transition-all"
             style={{
               backgroundColor: 'var(--elevated)',
               borderColor: 'var(--border-default)',
@@ -125,10 +147,10 @@ export default function AuditPage() {
               style={{ backgroundColor: 'var(--canvas)', borderColor: 'var(--border-default)' }}
             >
               <TableHead
-                className="w-10"
+                className="w-10 text-center"
                 style={{ color: 'var(--text-tertiary)' }}
               >
-                <Checkbox />
+                Verify
               </TableHead>
               <TableHead style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>
                 Asset Tag
@@ -154,7 +176,7 @@ export default function AuditPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {auditItems.map((item) => {
+            {items.map((item) => {
               const rowBg =
                 item.status === 'Verified'
                   ? 'var(--status-success-bg)'
@@ -171,12 +193,15 @@ export default function AuditPage() {
                     borderColor: 'var(--border-default)',
                   }}
                 >
-                  <TableCell>
-                    <Checkbox defaultChecked={item.status === 'Verified'} />
+                  <TableCell className="text-center">
+                    <Checkbox 
+                      checked={item.status === 'Verified'} 
+                      onCheckedChange={(checked) => handleVerifyToggle(item.id, !!checked)}
+                    />
                   </TableCell>
                   <TableCell
-                    className="font-mono text-sm"
-                    style={{ color: 'var(--text-primary)' }}
+                    className="font-mono text-sm font-semibold"
+                    style={{ color: 'var(--primary-navy)' }}
                   >
                     {item.assetTag}
                   </TableCell>

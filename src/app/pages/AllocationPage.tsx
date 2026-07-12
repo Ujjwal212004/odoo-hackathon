@@ -1,7 +1,10 @@
-import { allocations } from '@/app/data/mockData';
+import { useState } from 'react';
+import { allocations as initialAllocations } from '@/app/data/mockData';
 import StatusBadge from '@/app/components/StatusBadge';
 import PageHeader from '@/app/components/PageHeader';
 import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
 import {
   Table,
   TableBody,
@@ -10,12 +13,44 @@ import {
   TableHeader,
   TableRow,
 } from '@/app/components/ui/table';
-import { Plus, UserCheck } from 'lucide-react';
+import { Plus, UserCheck, X } from 'lucide-react';
 
 export default function AllocationPage() {
-  const activeCount = allocations.filter((a) => a.status === 'Active').length;
-  const pendingCount = allocations.filter((a) => a.status === 'Pending').length;
-  const returnedCount = allocations.filter((a) => a.status === 'Returned').length;
+  const [localAllocations, setLocalAllocations] = useState(initialAllocations);
+  
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [assetTag, setAssetTag] = useState('');
+  const [assetName, setAssetName] = useState('');
+  const [allocatedTo, setAllocatedTo] = useState('');
+  const [department, setDepartment] = useState('Engineering');
+  const [approvedBy, setApprovedBy] = useState('Tom Richards');
+
+  const activeCount = localAllocations.filter((a) => a.status === 'Active').length;
+  const pendingCount = localAllocations.filter((a) => a.status === 'Pending').length;
+  const returnedCount = localAllocations.filter((a) => a.status === 'Returned').length;
+
+  function handleCreateAllocation(e: React.FormEvent) {
+    e.preventDefault();
+    if (!assetTag || !assetName || !allocatedTo) return;
+
+    const newAlloc = {
+      id: `ALC-0${localAllocations.length + 1}`,
+      assetTag: assetTag.startsWith('AST-') ? assetTag : `AST-${assetTag}`,
+      assetName,
+      allocatedTo,
+      department,
+      date: new Date().toISOString().split('T')[0],
+      status: 'Active' as const,
+      approvedBy,
+    };
+
+    setLocalAllocations(prev => [newAlloc, ...prev]);
+    setIsModalOpen(false);
+    setAssetTag('');
+    setAssetName('');
+    setAllocatedTo('');
+  }
 
   return (
     <div>
@@ -23,7 +58,7 @@ export default function AllocationPage() {
         title="Allocation"
         description="Manage asset assignments across your organization"
         actions={
-          <Button>
+          <Button onClick={() => setIsModalOpen(true)}>
             <Plus className="size-4" />
             New Allocation
           </Button>
@@ -178,7 +213,7 @@ export default function AllocationPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {allocations.map((alloc) => (
+            {localAllocations.map((alloc) => (
               <TableRow
                 key={alloc.id}
                 style={{ borderColor: 'var(--border-default)' }}
@@ -236,6 +271,101 @@ export default function AllocationPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* ── New Allocation Modal ──────────────────────────────── */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
+          <div 
+            className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+            style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-[1rem] font-semibold" style={{ color: 'var(--primary-navy)' }}>
+                New Allocation Request
+              </h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-lg p-1 hover:bg-[var(--surface)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateAllocation} className="space-y-4">
+              <div>
+                <Label htmlFor="allocAssetTag">Asset Tag</Label>
+                <Input 
+                  id="allocAssetTag" 
+                  placeholder="AST-1168" 
+                  value={assetTag} 
+                  onChange={(e) => setAssetTag(e.target.value)}
+                  required 
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="allocAssetName">Asset Name</Label>
+                <Input 
+                  id="allocAssetName" 
+                  placeholder='Dell UltraSharp 27"' 
+                  value={assetName} 
+                  onChange={(e) => setAssetName(e.target.value)}
+                  required 
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="allocatedTo">Allocate To (Employee Name)</Label>
+                <Input 
+                  id="allocatedTo" 
+                  placeholder="James Park" 
+                  value={allocatedTo} 
+                  onChange={(e) => setAllocatedTo(e.target.value)}
+                  required 
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="allocDept">Department</Label>
+                  <select 
+                    id="allocDept"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                  >
+                    <option value="IT">IT</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Design">Design</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Operations">Operations</option>
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="approvedBy">Approved By</Label>
+                  <Input 
+                    id="approvedBy" 
+                    value={approvedBy} 
+                    onChange={(e) => setApprovedBy(e.target.value)}
+                    required 
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  Allocate Asset
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

@@ -115,15 +115,17 @@ export default function AssetDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={() => alert('Editing asset metadata is restricted to managers.')}>
             <Edit className="size-4" />
             Edit
           </Button>
-          <Button variant="secondary" size="sm">
-            <ArrowLeftRight className="size-4" />
-            Transfer
-          </Button>
-          <Button variant="secondary" size="sm">
+          <Link to="/transfer">
+            <Button variant="secondary" size="sm">
+              <ArrowLeftRight className="size-4" />
+              Transfer
+            </Button>
+          </Link>
+          <Button variant="secondary" size="sm" onClick={() => alert(`QR Code metadata: tag=${asset.tag}`)}>
             <QrCode className="size-4" />
             QR Code
           </Button>
@@ -131,12 +133,18 @@ export default function AssetDetailPage() {
             variant="outline"
             size="sm"
             style={{ color: 'var(--status-danger)', borderColor: 'var(--status-danger)' }}
+            onClick={() => {
+              if (confirm(`Are you sure you want to archive ${asset.name}?`)) {
+                alert('Asset archived successfully.');
+              }
+            }}
           >
             <Archive className="size-4" />
             Archive
           </Button>
         </div>
       </div>
+
 
       {/* ── Tabs ─────────────────────────────────────────────── */}
       <Tabs defaultValue="overview">

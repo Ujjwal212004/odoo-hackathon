@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Link } from 'react-router';
 import KPICard from '@/app/components/KPICard';
 import StatusBadge from '@/app/components/StatusBadge';
 import PageHeader from '@/app/components/PageHeader';
@@ -5,7 +7,7 @@ import { Button } from '@/app/components/ui/button';
 import {
   kpiData,
   recentActivity,
-  pendingApprovals,
+  pendingApprovals as initialPendingApprovals,
   utilizationByCategory,
   assetHealthDistribution,
 } from '@/app/data/mockData';
@@ -41,6 +43,16 @@ const activityDotColor: Record<string, string> = {
 };
 
 export default function DashboardPage() {
+  const [approvals, setApprovals] = useState(initialPendingApprovals);
+
+  function handleApprove(id: string) {
+    setApprovals(prev => prev.filter(item => item.id !== id));
+  }
+
+  function handleDecline(id: string) {
+    setApprovals(prev => prev.filter(item => item.id !== id));
+  }
+
   return (
     <div>
       <PageHeader
@@ -50,22 +62,30 @@ export default function DashboardPage() {
 
       {/* ── Quick Actions ────────────────────────────────────── */}
       <div className="mb-6 flex gap-2">
-        <Button variant="secondary" size="sm">
-          <Plus className="size-4" />
-          New Asset
-        </Button>
-        <Button variant="secondary" size="sm">
-          <ArrowLeftRight className="size-4" />
-          Transfer
-        </Button>
-        <Button variant="secondary" size="sm">
-          <CalendarDays className="size-4" />
-          Book Resource
-        </Button>
-        <Button variant="secondary" size="sm">
-          <ClipboardCheck className="size-4" />
-          Run Audit
-        </Button>
+        <Link to="/assets?new=true">
+          <Button variant="secondary" size="sm">
+            <Plus className="size-4" />
+            New Asset
+          </Button>
+        </Link>
+        <Link to="/transfer">
+          <Button variant="secondary" size="sm">
+            <ArrowLeftRight className="size-4" />
+            Transfer
+          </Button>
+        </Link>
+        <Link to="/booking">
+          <Button variant="secondary" size="sm">
+            <CalendarDays className="size-4" />
+            Book Resource
+          </Button>
+        </Link>
+        <Link to="/audit">
+          <Button variant="secondary" size="sm">
+            <ClipboardCheck className="size-4" />
+            Run Audit
+          </Button>
+        </Link>
       </div>
 
       {/* ── KPI Row ──────────────────────────────────────────── */}
@@ -90,7 +110,7 @@ export default function DashboardPage() {
         />
         <KPICard
           label="Pending Actions"
-          value={kpiData.pendingTransfers + kpiData.pendingApprovals}
+          value={kpiData.pendingTransfers + approvals.length}
           icon={<Clock className="size-4" />}
         />
       </div>
@@ -114,12 +134,14 @@ export default function DashboardPage() {
               >
                 Recent Activity
               </h2>
-              <button
-                className="text-[0.75rem] font-medium"
-                style={{ color: 'var(--primary-navy)' }}
-              >
-                View all
-              </button>
+              <Link to="/notifications">
+                <button
+                  className="text-[0.75rem] font-medium cursor-pointer hover:underline"
+                  style={{ color: 'var(--primary-navy)' }}
+                >
+                  View all
+                </button>
+              </Link>
             </div>
 
             <div className="flex flex-col">
@@ -189,54 +211,60 @@ export default function DashboardPage() {
                   color: 'var(--primary-navy)',
                 }}
               >
-                {pendingApprovals.length}
+                {approvals.length}
               </span>
             </div>
 
-            <div className="flex flex-col gap-3">
-              {pendingApprovals.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between rounded-lg px-3 py-3"
-                  style={{
-                    backgroundColor: 'var(--surface)',
-                  }}
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="rounded px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wide"
-                        style={{
-                          backgroundColor: 'var(--canvas)',
-                          color: 'var(--text-tertiary)',
-                          border: '1px solid var(--border-default)',
-                        }}
+            {approvals.length === 0 ? (
+              <div className="text-center py-6 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                No pending approvals.
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {approvals.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between rounded-lg px-3 py-3 animate-fade-in"
+                    style={{
+                      backgroundColor: 'var(--surface)',
+                    }}
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="rounded px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wide"
+                          style={{
+                            backgroundColor: 'var(--canvas)',
+                            color: 'var(--text-tertiary)',
+                            border: '1px solid var(--border-default)',
+                          }}
+                        >
+                          {item.type}
+                        </span>
+                        <span
+                          className="text-sm font-medium"
+                          style={{ color: 'var(--text-primary)' }}
+                        >
+                          {item.title}
+                        </span>
+                      </div>
+                      <div
+                        className="mt-1 text-xs"
+                        style={{ color: 'var(--text-secondary)' }}
                       >
-                        {item.type}
-                      </span>
-                      <span
-                        className="text-sm font-medium"
-                        style={{ color: 'var(--text-primary)' }}
-                      >
-                        {item.title}
-                      </span>
+                        Requested by {item.requestedBy} · {item.date}
+                      </div>
                     </div>
-                    <div
-                      className="mt-1 text-xs"
-                      style={{ color: 'var(--text-secondary)' }}
-                    >
-                      Requested by {item.requestedBy} · {item.date}
+                    <div className="flex shrink-0 gap-2">
+                      <Button size="sm" onClick={() => handleApprove(item.id)}>Approve</Button>
+                      <Button variant="secondary" size="sm" onClick={() => handleDecline(item.id)}>
+                        Decline
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex shrink-0 gap-2">
-                    <Button size="sm">Approve</Button>
-                    <Button variant="secondary" size="sm">
-                      Decline
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
