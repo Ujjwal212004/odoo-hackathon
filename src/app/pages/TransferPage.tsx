@@ -79,7 +79,7 @@ export default function TransferPage() {
           return (
             <div
               key={status}
-              className="rounded-xl border p-4"
+              className="rounded-lg border p-4"
               style={{
                 backgroundColor: 'var(--elevated)',
                 borderColor: 'var(--border-default)',
@@ -109,7 +109,7 @@ export default function TransferPage() {
 
       {/* ── Table Card ───────────────────────────────────────────── */}
       <div
-        className="rounded-xl border overflow-hidden"
+        className="rounded-lg border overflow-hidden"
         style={{
           backgroundColor: 'var(--elevated)',
           borderColor: 'var(--border-default)',
@@ -242,7 +242,7 @@ export default function TransferPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
           <div 
-            className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+            className="w-full max-w-md rounded-lg border p-6 space-y-4 animate-fade-in-up"
             style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
           >
             <div className="flex items-center justify-between">
@@ -287,7 +287,7 @@ export default function TransferPage() {
                     id="trfFromDept"
                     value={fromDept}
                     onChange={(e) => setFromDept(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="IT">IT</option>
                     <option value="Engineering">Engineering</option>
@@ -304,7 +304,7 @@ export default function TransferPage() {
                     id="trfToDept"
                     value={toDept}
                     onChange={(e) => setToDept(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="IT">IT</option>
                     <option value="Engineering">Engineering</option>

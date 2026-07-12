@@ -116,7 +116,7 @@ export default function NotificationsPage() {
             <div
               key={notification.id}
               onClick={() => handleToggleRead(notification.id)}
-              className="rounded-xl border p-5 flex gap-4 cursor-pointer hover:shadow-xs transition-all"
+              className="rounded-lg border p-5 flex gap-4 cursor-pointer hover:shadow-xs transition-all"
               style={{
                 backgroundColor: notification.read
                   ? 'var(--canvas)'
@@ -161,7 +161,7 @@ export default function NotificationsPage() {
               {!notification.read && (
                 <div className="shrink-0 mt-1">
                   <span
-                    className="block size-2 rounded-full animate-pulse"
+                    className="block size-2 rounded-full"
                     style={{ backgroundColor: 'var(--primary-navy)' }}
                   />
                 </div>

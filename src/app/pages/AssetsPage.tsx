@@ -128,7 +128,7 @@ export default function AssetsPage() {
       {/* ── Advanced Filters Panel ───────────────────────────── */}
       {showAdvancedFilters && (
         <div 
-          className="mb-4 rounded-xl border p-4 grid grid-cols-3 gap-4 animate-fade-in"
+          className="mb-4 rounded-lg border p-4 grid grid-cols-3 gap-4 animate-fade-in"
           style={{
             borderColor: 'var(--border-default)',
             backgroundColor: 'var(--surface)',
@@ -139,7 +139,7 @@ export default function AssetsPage() {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
+              className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
             >
               {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
             </select>
@@ -149,7 +149,7 @@ export default function AssetsPage() {
             <select
               value={departmentFilter}
               onChange={(e) => setDepartmentFilter(e.target.value)}
-              className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
+              className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
             >
               {departments.map(dept => <option key={dept} value={dept}>{dept}</option>)}
             </select>
@@ -172,7 +172,7 @@ export default function AssetsPage() {
 
       {/* ── Search & Filter Bar ──────────────────────────────── */}
       <div
-        className="mb-6 flex items-center gap-4 rounded-xl border p-4"
+        className="mb-6 flex items-center gap-4 rounded-lg border p-4"
         style={{
           borderColor: 'var(--border-default)',
           backgroundColor: 'var(--elevated)',
@@ -222,7 +222,7 @@ export default function AssetsPage() {
 
       {/* ── Table ────────────────────────────────────────────── */}
       <div
-        className="overflow-hidden rounded-xl border"
+        className="overflow-hidden rounded-lg border"
         style={{
           borderColor: 'var(--border-default)',
           backgroundColor: 'var(--elevated)',
@@ -409,7 +409,7 @@ export default function AssetsPage() {
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
           <div 
-            className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+            className="w-full max-w-md rounded-lg border p-6 space-y-4 animate-fade-in-up"
             style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
           >
             <div className="flex items-center justify-between">
@@ -454,7 +454,7 @@ export default function AssetsPage() {
                     id="assetCategory"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="Laptop">Laptop</option>
                     <option value="Display">Display</option>
@@ -469,7 +469,7 @@ export default function AssetsPage() {
                     id="assetStatus"
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value as any)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="Available">Available</option>
                     <option value="Allocated">Allocated</option>
@@ -495,7 +495,7 @@ export default function AssetsPage() {
                     id="assetDept"
                     value={newDepartment}
                     onChange={(e) => setNewDepartment(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="IT">IT</option>
                     <option value="Engineering">Engineering</option>

@@ -8,13 +8,17 @@ interface PageHeaderProps {
 
 export default function PageHeader({ title, description, actions }: PageHeaderProps) {
   return (
-    <div className="mb-8 flex items-start justify-between">
+    <div
+      className="mb-8 flex items-start justify-between border-b pb-6"
+      style={{ borderColor: 'var(--border-default)' }}
+    >
       <div>
+        <div className="section-label mb-2">POPPY</div>
         <h1
           className="text-2xl font-semibold"
           style={{
             color: 'var(--primary-navy)',
-            letterSpacing: '-0.025em',
+            letterSpacing: 0,
             lineHeight: '1.2',
           }}
         >

@@ -16,7 +16,7 @@ export default function EmptyState({ icon, title, description, action }: EmptySt
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
       <div
-        className="mb-4 flex size-12 items-center justify-center rounded-xl"
+        className="mb-4 flex size-12 items-center justify-center rounded-lg"
         style={{
           backgroundColor: 'var(--surface)',
           color: 'var(--text-tertiary)',

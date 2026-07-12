@@ -120,7 +120,7 @@ export default function BookingPage() {
       <div className="grid gap-6" style={{ gridTemplateColumns: '1fr 340px' }}>
         {/* ── Left: Weekly Calendar ─────────────────────────────── */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -252,7 +252,7 @@ export default function BookingPage() {
 
         {/* ── Right: Upcoming Bookings ──────────────────────────── */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -329,7 +329,7 @@ export default function BookingPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
           <div 
-            className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+            className="w-full max-w-md rounded-lg border p-6 space-y-4 animate-fade-in-up"
             style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
           >
             <div className="flex items-center justify-between">
@@ -351,7 +351,7 @@ export default function BookingPage() {
                   id="bkgResource"
                   value={resource}
                   onChange={(e) => setResource(e.target.value)}
-                  className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                  className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                 >
                   <option value="Conference Room A">Conference Room A</option>
                   <option value="Conference Room B">Conference Room B</option>
@@ -388,7 +388,7 @@ export default function BookingPage() {
                     id="bkgDate"
                     value={bookingDate}
                     onChange={(e) => setBookingDate(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="2025-07-14">July 14</option>
                     <option value="2025-07-15">July 15</option>
@@ -404,7 +404,7 @@ export default function BookingPage() {
                     id="bkgStart"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     {HOURS.map(h => {
                       const t = `${String(h).padStart(2, '0')}:00`;
@@ -419,7 +419,7 @@ export default function BookingPage() {
                     id="bkgEnd"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     {HOURS.map(h => {
                       const t = `${String(h).padStart(2, '0')}:00`;

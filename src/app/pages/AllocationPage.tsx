@@ -69,7 +69,7 @@ export default function AllocationPage() {
       <div className="grid grid-cols-3 gap-4 mb-6">
         {/* Active Allocations */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -100,7 +100,7 @@ export default function AllocationPage() {
 
         {/* Pending Approval */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -127,7 +127,7 @@ export default function AllocationPage() {
 
         {/* Returned This Month */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -153,7 +153,7 @@ export default function AllocationPage() {
 
       {/* ── Table Card ───────────────────────────────────────────── */}
       <div
-        className="rounded-xl border overflow-hidden"
+        className="rounded-lg border overflow-hidden"
         style={{
           backgroundColor: 'var(--elevated)',
           borderColor: 'var(--border-default)',
@@ -276,7 +276,7 @@ export default function AllocationPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
           <div 
-            className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+            className="w-full max-w-md rounded-lg border p-6 space-y-4 animate-fade-in-up"
             style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
           >
             <div className="flex items-center justify-between">
@@ -332,7 +332,7 @@ export default function AllocationPage() {
                     id="allocDept"
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="IT">IT</option>
                     <option value="Engineering">Engineering</option>

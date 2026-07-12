@@ -17,10 +17,11 @@ export default function KPICard({ label, value, trend, icon }: KPICardProps) {
 
   return (
     <div
-      className="rounded-xl border p-5"
+      className="rounded-lg border p-5"
       style={{
         borderColor: 'var(--border-default)',
         backgroundColor: 'var(--elevated)',
+        boxShadow: 'var(--shadow-sm)',
       }}
     >
       <div className="flex items-start justify-between">
@@ -34,8 +35,8 @@ export default function KPICard({ label, value, trend, icon }: KPICardProps) {
           <div
             className="flex size-8 items-center justify-center rounded-lg"
             style={{
-              backgroundColor: 'var(--surface)',
-              color: 'var(--text-secondary)',
+              backgroundColor: 'var(--accent-brass-muted)',
+              color: 'var(--primary-navy)',
             }}
           >
             {icon}
@@ -46,7 +47,7 @@ export default function KPICard({ label, value, trend, icon }: KPICardProps) {
         className="mt-2 text-[1.75rem] font-semibold"
         style={{
           color: 'var(--primary-navy)',
-          letterSpacing: '-0.03em',
+          letterSpacing: 0,
           fontVariantNumeric: 'tabular-nums',
           lineHeight: '1.1',
         }}

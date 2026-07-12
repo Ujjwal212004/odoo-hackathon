@@ -98,7 +98,7 @@ export default function AssetDetailPage() {
             className="text-2xl font-semibold"
             style={{
               color: 'var(--primary-navy)',
-              letterSpacing: '-0.025em',
+              letterSpacing: 0,
               lineHeight: '1.2',
             }}
           >
@@ -167,7 +167,7 @@ export default function AssetDetailPage() {
             <div className="flex flex-col gap-6">
               {/* Asset Information */}
               <div
-                className="rounded-xl border p-5"
+                className="rounded-lg border p-5"
                 style={{
                   borderColor: 'var(--border-default)',
                   backgroundColor: 'var(--elevated)',
@@ -215,7 +215,7 @@ export default function AssetDetailPage() {
 
               {/* Assignment */}
               <div
-                className="rounded-xl border p-5"
+                className="rounded-lg border p-5"
                 style={{
                   borderColor: 'var(--border-default)',
                   backgroundColor: 'var(--elevated)',
@@ -237,7 +237,7 @@ export default function AssetDetailPage() {
             <div className="flex flex-col gap-6">
               {/* Quick Stats */}
               <div
-                className="rounded-xl border p-5"
+                className="rounded-lg border p-5"
                 style={{
                   borderColor: 'var(--border-default)',
                   backgroundColor: 'var(--elevated)',
@@ -278,7 +278,7 @@ export default function AssetDetailPage() {
 
               {/* Related Assets */}
               <div
-                className="rounded-xl border p-5"
+                className="rounded-lg border p-5"
                 style={{
                   borderColor: 'var(--border-default)',
                   backgroundColor: 'var(--elevated)',
@@ -323,7 +323,7 @@ export default function AssetDetailPage() {
         {/* ── Timeline Tab ───────────────────────────────────── */}
         <TabsContent value="timeline" className="mt-6">
           <div
-            className="rounded-xl border p-5"
+            className="rounded-lg border p-5"
             style={{
               borderColor: 'var(--border-default)',
               backgroundColor: 'var(--elevated)',
@@ -393,7 +393,7 @@ export default function AssetDetailPage() {
               {assetMaintenanceTasks.map((task) => (
                 <div
                   key={task.id}
-                  className="rounded-xl border p-5"
+                  className="rounded-lg border p-5"
                   style={{
                     borderColor: 'var(--border-default)',
                     backgroundColor: 'var(--elevated)',
@@ -451,7 +451,7 @@ export default function AssetDetailPage() {
         {/* ── Documents Tab ──────────────────────────────────── */}
         <TabsContent value="documents" className="mt-6">
           <div
-            className="rounded-xl border"
+            className="rounded-lg border"
             style={{
               borderColor: 'var(--border-default)',
               backgroundColor: 'var(--elevated)',

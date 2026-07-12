@@ -1,25 +1,31 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
-import { CheckCircle2, Shield, Clock, BarChart3 } from 'lucide-react';
+import { CheckCircle2, Shield, Clock, BarChart3, User, UserPlus, ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [isSignUp, setIsSignUp] = useState(false);
-  
+  const location = useLocation();
+  const initialMode = location.state?.mode === 'signup'
+    ? 'signup'
+    : location.state?.mode === 'login'
+      ? 'login'
+      : 'choose';
+  const [viewMode, setViewMode] = useState<'choose' | 'login' | 'signup'>(initialMode);
+
   // Login State
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  
+
   // Signup State
   const [fullName, setFullName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  
+
   // Error / Status Message
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -29,7 +35,7 @@ export default function LoginPage() {
       setErrorMsg('Please fill in all credentials.');
       return;
     }
-    
+
     // Store session
     localStorage.setItem('af_auth', 'true');
     localStorage.setItem('af_user_name', 'Alicia Chen');
@@ -75,23 +81,22 @@ export default function LoginPage() {
         <div className="max-w-md space-y-10">
           {/* Logo mark */}
           <div className="flex items-center gap-3 animate-fade-in">
-            <div
-              className="w-11 h-11 rounded-lg flex items-center justify-center text-base font-bold"
-              style={{ backgroundColor: 'var(--primary-navy)', color: '#FFFFFF' }}
-            >
-              AF
-            </div>
+            <img
+              src="/LOGO.jpeg"
+              alt="Poppy Logo"
+              className="w-11 h-11 rounded-lg object-cover"
+            />
             <span
               className="tracking-[0.18em] uppercase font-semibold text-[0.875rem]"
               style={{ color: 'var(--primary-navy)' }}
             >
-              ASSETFLOW
+              POPPY
             </span>
           </div>
 
           {/* Heading */}
           <h1
-            className="text-[2rem] font-semibold leading-[1.15] tracking-[-0.02em] animate-fade-in stagger-1"
+            className="text-[2rem] font-semibold leading-[1.15]  animate-fade-in stagger-1"
             style={{ color: 'var(--primary-navy)' }}
           >
             Operational clarity for every asset your organization owns.
@@ -118,7 +123,7 @@ export default function LoginPage() {
             ].map((point, index) => (
               <div key={point.title} className={`flex items-start gap-4 animate-fade-in stagger-${index + 2}`}>
                 <div
-                  className="w-10 h-10 rounded-[10px] border flex items-center justify-center shrink-0"
+                  className="w-10 h-10 rounded-[8px] border flex items-center justify-center shrink-0"
                   style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--elevated)' }}
                 >
                   <point.icon className="w-5 h-5" style={{ color: 'var(--primary-navy)' }} />
@@ -146,7 +151,7 @@ export default function LoginPage() {
       </div>
 
       {/* ============================================================ */}
-      {/*  RIGHT PANEL – Sign-in / Sign-up form                        */}
+      {/*  RIGHT PANEL – Selection or login/signup form               */}
       {/* ============================================================ */}
       <div
         className="w-full lg:w-[480px] shrink-0 border-l flex items-center justify-center px-8 py-12"
@@ -155,19 +160,35 @@ export default function LoginPage() {
         <div className="w-full max-w-sm space-y-8">
           {/* Mobile logo (only visible on small screens) */}
           <div className="lg:hidden flex items-center gap-3 mb-4">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold"
-              style={{ backgroundColor: 'var(--primary-navy)', color: '#FFFFFF' }}
-            >
-              AF
-            </div>
+            <img
+              src="/LOGO.jpeg"
+              alt="Poppy Logo"
+              className="w-9 h-9 rounded-lg object-cover"
+            />
             <span
               className="tracking-[0.18em] uppercase font-semibold text-[0.8125rem]"
               style={{ color: 'var(--primary-navy)' }}
             >
-              ASSETFLOW
+              POPPY
             </span>
           </div>
+
+          {/* Back button (only shown when not on choice screen) */}
+          {viewMode !== 'choose' && (
+            <button
+              onClick={() => {
+                setViewMode('choose');
+                setErrorMsg('');
+              }}
+              className="flex items-center gap-1.5 text-[0.75rem] font-medium transition-colors border-0 bg-transparent p-0 cursor-pointer outline-none mb-2"
+              style={{ color: 'var(--text-tertiary)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--primary-navy)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to options</span>
+            </button>
+          )}
 
           {/* Header */}
           <div className="space-y-2">
@@ -175,19 +196,25 @@ export default function LoginPage() {
               className="text-xl font-semibold"
               style={{ color: 'var(--primary-navy)' }}
             >
-              {isSignUp ? 'Create an account' : 'Sign in to AssetFlow'}
+              {viewMode === 'signup'
+                ? 'Create an account'
+                : viewMode === 'login'
+                  ? 'Sign in to POPPY'
+                  : 'Welcome to POPPY'}
             </h2>
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              {isSignUp
+              {viewMode === 'signup'
                 ? 'Get started with a 14-day free enterprise trial.'
-                : 'Enter your credentials to access the platform.'}
+                : viewMode === 'login'
+                  ? 'Enter your credentials to access the platform.'
+                  : 'Please select how you would like to proceed.'}
             </p>
           </div>
 
           {/* Error messages */}
           {errorMsg && (
             <div
-              className="rounded-[10px] border p-3 text-xs font-medium"
+              className="rounded-[8px] border p-3 text-xs font-medium"
               style={{
                 backgroundColor: 'var(--status-danger-bg)',
                 borderColor: 'var(--status-danger-border)',
@@ -198,9 +225,90 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Forms */}
-          {!isSignUp ? (
-            <form onSubmit={handleLoginSubmit} className="space-y-5">
+          {/* Selection View */}
+          {viewMode === 'choose' && (
+            <div className="space-y-4 pt-2 animate-fade-in">
+              <button
+                onClick={() => setViewMode('login')}
+                className="w-full text-left p-5 rounded-xl border transition-all duration-200 group flex items-start gap-4 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-navy)]"
+                style={{
+                  backgroundColor: 'var(--surface)',
+                  borderColor: 'var(--border-default)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--accent-brass)';
+                  e.currentTarget.style.backgroundColor = 'var(--elevated)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)';
+                  e.currentTarget.style.backgroundColor = 'var(--surface)';
+                }}
+              >
+                <div
+                  className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors"
+                  style={{
+                    backgroundColor: 'rgba(20, 33, 61, 0.06)',
+                    color: 'var(--primary-navy)',
+                  }}
+                >
+                  <User className="w-5 h-5 animate-pulse" />
+                </div>
+                <div className="space-y-1">
+                  <h4
+                    className="font-semibold text-sm transition-colors"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    Returning User
+                  </h4>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    I already have an account and want to sign in to access my dashboard.
+                  </p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => setViewMode('signup')}
+                className="w-full text-left p-5 rounded-xl border transition-all duration-200 group flex items-start gap-4 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-navy)]"
+                style={{
+                  backgroundColor: 'var(--surface)',
+                  borderColor: 'var(--border-default)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--accent-brass)';
+                  e.currentTarget.style.backgroundColor = 'var(--elevated)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)';
+                  e.currentTarget.style.backgroundColor = 'var(--surface)';
+                }}
+              >
+                <div
+                  className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors"
+                  style={{
+                    backgroundColor: 'rgba(20, 33, 61, 0.06)',
+                    color: 'var(--primary-navy)',
+                  }}
+                >
+                  <UserPlus className="w-5 h-5 animate-pulse" />
+                </div>
+                <div className="space-y-1">
+                  <h4
+                    className="font-semibold text-sm transition-colors"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    New User / Sign Up
+                  </h4>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    I want to register a new organization and start a 14-day free trial.
+                  </p>
+                </div>
+              </button>
+            </div>
+          )}
+
+          {/* Login Form */}
+          {viewMode === 'login' && (
+            <form onSubmit={handleLoginSubmit} className="space-y-5 animate-fade-in">
               <div className="space-y-2">
                 <Label htmlFor="loginEmail">Email address</Label>
                 <Input
@@ -241,8 +349,11 @@ export default function LoginPage() {
                 Sign in
               </Button>
             </form>
-          ) : (
-            <form onSubmit={handleSignupSubmit} className="space-y-4">
+          )}
+
+          {/* Signup Form */}
+          {viewMode === 'signup' && (
+            <form onSubmit={handleSignupSubmit} className="space-y-4 animate-fade-in">
               <div className="space-y-1">
                 <Label htmlFor="fullName">Full Name</Label>
                 <Input
@@ -309,45 +420,46 @@ export default function LoginPage() {
             </form>
           )}
 
-          {/* Toggle button */}
-          <div className="text-center text-xs" style={{ color: 'var(--text-tertiary)' }}>
-            {isSignUp ? (
-              <>
-                Already have an account?{' '}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsSignUp(false);
-                    setErrorMsg('');
-                  }}
-                  className="font-medium no-underline"
-                  style={{ color: 'var(--primary-navy)' }}
-                >
-                  Sign in
-                </a>
-              </>
-            ) : (
-              <>
-                Don&apos;t have an account yet?{' '}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsSignUp(true);
-                    setErrorMsg('');
-                  }}
-                  className="font-medium no-underline"
-                  style={{ color: 'var(--primary-navy)' }}
-                >
-                  Sign up
-                </a>
-              </>
-            )}
-          </div>
+          {/* Toggle footer links */}
+          {viewMode !== 'choose' && (
+            <div className="text-center text-xs" style={{ color: 'var(--text-tertiary)' }}>
+              {viewMode === 'signup' ? (
+                <>
+                  Already have an account?{' '}
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setViewMode('login');
+                      setErrorMsg('');
+                    }}
+                    className="font-medium no-underline"
+                    style={{ color: 'var(--primary-navy)' }}
+                  >
+                    Sign in
+                  </a>
+                </>
+              ) : (
+                <>
+                  Don&apos;t have an account yet?{' '}
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setViewMode('signup');
+                      setErrorMsg('');
+                    }}
+                    className="font-medium no-underline"
+                    style={{ color: 'var(--primary-navy)' }}
+                  >
+                    Sign up
+                  </a>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
-

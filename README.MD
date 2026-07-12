@@ -1,8 +1,8 @@
-# AssetFlow
+# POPPY
 
 > AI-powered Enterprise Asset & Resource Management System
 
-AssetFlow is a modern ERP platform that streamlines enterprise asset tracking, allocation, maintenance, resource booking, and audit management through a centralized, role-based system.
+POPPY is a modern ERP platform that streamlines enterprise asset tracking, allocation, maintenance, resource booking, and audit management through a centralized, role-based system.
 
 ## Features
 
@@ -51,7 +51,7 @@ PostgreSQL
 ## Project Structure
 
 ```text
-assetflow/
+POPPY/
 ├── frontend/
 ├── backend/
 ├── docs/

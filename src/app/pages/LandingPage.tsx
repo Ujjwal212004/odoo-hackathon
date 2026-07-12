@@ -25,7 +25,7 @@ import {
 function PreviewShell({ children, title = 'Dashboard' }: { children: React.ReactNode; title?: string }) {
   return (
     <div
-      className="rounded-xl border overflow-hidden"
+      className="rounded-lg border overflow-hidden"
       style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--elevated)' }}
     >
       {/* Title bar */}
@@ -69,7 +69,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 function MiniKpiCard({ label, value, accent }: { label: string; value: string; accent?: string }) {
   return (
     <div
-      className="rounded-[10px] border px-3 py-2.5"
+      className="rounded-[8px] border px-3 py-2.5"
       style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--elevated)' }}
     >
       <p className="text-[0.625rem] font-medium mb-0.5" style={{ color: 'var(--text-tertiary)' }}>
@@ -113,17 +113,16 @@ export default function LandingPage() {
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" onClick={handleLogoClick} className="flex items-center gap-3 no-underline">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold"
-              style={{ backgroundColor: 'var(--primary-navy)', color: '#FFFFFF' }}
-            >
-              AF
-            </div>
+            <img
+              src="/LOGO.jpeg"
+              alt="Poppy Logo"
+              className="w-9 h-9 rounded-lg object-cover"
+            />
             <span
               className="tracking-[0.18em] uppercase font-semibold text-[0.8125rem]"
               style={{ color: 'var(--primary-navy)' }}
             >
-              ASSETFLOW
+              POPPY
             </span>
           </Link>
 
@@ -153,6 +152,14 @@ export default function LandingPage() {
                   Explore Platform
                 </Button>
               </Link>
+              <Link to="/login">
+                <Button
+                  size="sm"
+                  className="hover:bg-[var(--accent-brass)] hover:border-[var(--accent-brass)] transition-colors duration-200"
+                >
+                  Login / Signup
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -171,23 +178,32 @@ export default function LandingPage() {
             <div className="space-y-6">
               <SectionLabel>Enterprise Asset &amp; Resource Management Platform</SectionLabel>
               <h1
-                className="text-[2.75rem] lg:text-[3.25rem] font-semibold leading-[1.05] tracking-[-0.03em]"
+                className="text-[2.75rem] lg:text-[3.25rem] font-semibold leading-[1.05]"
                 style={{ color: 'var(--primary-navy)' }}
               >
                 Operational clarity for every asset your organization owns.
               </h1>
               <p className="text-base leading-relaxed max-w-lg" style={{ color: 'var(--text-secondary)' }}>
-                AssetFlow gives operations teams a single system to register, allocate, maintain,
+                POPPY gives operations teams a single system to register, allocate, maintain,
                 and retire every physical and digital asset — replacing spreadsheets, email chains,
                 and disconnected tools.
               </p>
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link to="/dashboard">
                   <Button
+                    variant="outline"
+                    size="lg"
+                    className="hover:bg-[var(--accent-brass)] hover:text-white hover:border-[var(--accent-brass)] transition-colors duration-200"
+                  >
+                    Explore Platform
+                  </Button>
+                </Link>
+                <Link to="/login">
+                  <Button
                     size="lg"
                     className="hover:bg-[var(--accent-brass)] hover:border-[var(--accent-brass)] transition-colors duration-200"
                   >
-                    Explore Platform
+                    Login / Signup
                   </Button>
                 </Link>
               </div>
@@ -210,7 +226,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right — Preview shell */}
-            <PreviewShell title="AssetFlow · Overview">
+            <PreviewShell title="POPPY · Overview">
               {/* KPI row */}
               <div className="grid grid-cols-2 gap-2.5 mb-4">
                 <MiniKpiCard label="Available" value="1,284" accent="var(--status-success)" />
@@ -220,7 +236,7 @@ export default function LandingPage() {
               </div>
 
               {/* Mini table */}
-              <div className="rounded-[10px] border overflow-hidden" style={{ borderColor: 'var(--border-default)' }}>
+              <div className="rounded-[8px] border overflow-hidden" style={{ borderColor: 'var(--border-default)' }}>
                 <table className="w-full text-[0.6875rem]">
                   <thead>
                     <tr style={{ backgroundColor: 'var(--surface)' }}>
@@ -273,7 +289,7 @@ export default function LandingPage() {
           <div className="space-y-4 lg:sticky lg:top-24">
             <SectionLabel>The Problem</SectionLabel>
             <h2
-              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] tracking-[-0.02em]"
+              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] "
               style={{ color: 'var(--primary-navy)' }}
             >
               Fragmented systems make a simple task feel expensive.
@@ -320,7 +336,7 @@ export default function LandingPage() {
           <div className="space-y-4 mb-8">
             <SectionLabel>Complete Lifecycle</SectionLabel>
             <h2
-              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] tracking-[-0.02em]"
+              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] "
               style={{ color: 'var(--primary-navy)' }}
             >
               One system from registration to retirement.
@@ -354,7 +370,7 @@ export default function LandingPage() {
           <div className="space-y-4 mb-8">
             <SectionLabel>Platform Modules</SectionLabel>
             <h2
-              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] tracking-[-0.02em]"
+              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] "
               style={{ color: 'var(--primary-navy)' }}
             >
               Purpose-built modules that work together.
@@ -399,7 +415,7 @@ export default function LandingPage() {
                 style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--elevated)' }}
               >
                 <div
-                  className="w-10 h-10 rounded-[10px] border flex items-center justify-center mb-4"
+                  className="w-10 h-10 rounded-[8px] border flex items-center justify-center mb-4"
                   style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--surface)' }}
                 >
                   <mod.icon className="w-5 h-5" style={{ color: 'var(--primary-navy)' }} />
@@ -442,7 +458,7 @@ export default function LandingPage() {
             </div>
             {/* Allocation health */}
             <div
-              className="rounded-[10px] border p-3"
+              className="rounded-[8px] border p-3"
               style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--elevated)' }}
             >
               <div className="flex items-center justify-between mb-2">
@@ -520,7 +536,7 @@ export default function LandingPage() {
           <div className="space-y-4 mb-8">
             <SectionLabel>Capabilities</SectionLabel>
             <h2
-              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] tracking-[-0.02em]"
+              className="text-[1.75rem] lg:text-[2rem] font-semibold leading-[1.15] "
               style={{ color: 'var(--primary-navy)' }}
             >
               Built for the way operations teams actually work.
@@ -571,10 +587,19 @@ export default function LandingPage() {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <Link to="/dashboard">
                 <Button
+                  variant="outline"
+                  size="lg"
+                  className="bg-transparent border-white/20 text-white hover:bg-white hover:text-[var(--primary-navy)] hover:border-white transition-all duration-200"
+                >
+                  Explore Platform
+                </Button>
+              </Link>
+              <Link to="/login">
+                <Button
                   size="lg"
                   className="bg-white text-[var(--primary-navy)] hover:bg-[var(--accent-brass)] hover:text-white border border-transparent transition-all duration-200"
                 >
-                  Explore Platform
+                  Login / Signup
                 </Button>
               </Link>
             </div>
@@ -591,22 +616,21 @@ export default function LandingPage() {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-3 border-0 bg-transparent cursor-pointer p-0 text-left outline-none hover:opacity-80 transition-opacity"
           >
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
-              style={{ backgroundColor: 'var(--primary-navy)', color: '#FFFFFF' }}
-            >
-              AF
-            </div>
+            <img
+              src="/LOGO.jpeg"
+              alt="Poppy Logo"
+              className="w-8 h-8 rounded-lg object-cover"
+            />
             <span
               className="tracking-[0.18em] uppercase font-semibold text-[0.75rem]"
               style={{ color: 'var(--primary-navy)' }}
             >
-              ASSETFLOW
+              POPPY
             </span>
           </button>
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
             <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-              © {new Date().getFullYear()} AssetFlow. All rights reserved.
+              © {new Date().getFullYear()} POPPY. All rights reserved.
             </span>
             <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
               Enterprise asset management, simplified.

@@ -71,7 +71,7 @@ export default function AuditPage() {
         {summaryCards.map((card) => (
           <div
             key={card.label}
-            className="rounded-xl border p-4 transition-all"
+            className="rounded-lg border p-4 transition-all"
             style={{
               backgroundColor: 'var(--elevated)',
               borderColor: 'var(--border-default)',
@@ -100,7 +100,7 @@ export default function AuditPage() {
 
       {/* ── Progress Bar ─────────────────────────────────────────────── */}
       <div
-        className="rounded-xl border p-5 mb-6"
+        className="rounded-lg border p-5 mb-6"
         style={{
           backgroundColor: 'var(--elevated)',
           borderColor: 'var(--border-default)',
@@ -134,7 +134,7 @@ export default function AuditPage() {
 
       {/* ── Audit Table ──────────────────────────────────────────────── */}
       <div
-        className="rounded-xl border overflow-hidden"
+        className="rounded-lg border overflow-hidden"
         style={{
           backgroundColor: 'var(--elevated)',
           borderColor: 'var(--border-default)',

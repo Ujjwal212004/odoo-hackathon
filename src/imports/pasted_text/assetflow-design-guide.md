@@ -119,7 +119,7 @@ Design for the next 10 years.
 
 BRAND PERSONALITY
 
-AssetFlow is
+POPPY is
 
 Reliable
 
@@ -145,7 +145,7 @@ Never childish.
 
 PRODUCT
 
-AssetFlow
+POPPY
 
 Enterprise Asset & Resource Management Platform
 
@@ -172,7 +172,7 @@ One source of truth.
 
 DESIGN GOAL
 
-If someone opened AssetFlow for the first time,
+If someone opened POPPY for the first time,
 
 their first thought should be
 
@@ -527,7 +527,7 @@ Operational clarity for every asset your organization owns.
 
 Supporting copy
 
-AssetFlow helps organizations track, allocate, maintain, audit and analyze assets through one enterprise platform.
+POPPY helps organizations track, allocate, maintain, audit and analyze assets through one enterprise platform.
 
 Primary CTA
 

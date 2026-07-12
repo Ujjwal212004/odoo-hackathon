@@ -104,7 +104,7 @@ export default function MaintenancePage() {
           return (
             <div
               key={col.status}
-              className="min-w-[280px] flex-1 rounded-xl border p-4"
+              className="min-w-[280px] flex-1 rounded-lg border p-4"
               style={{
                 backgroundColor: 'var(--surface)',
                 borderColor: 'var(--border-default)',
@@ -138,7 +138,7 @@ export default function MaintenancePage() {
                 {tasks.map((task) => (
                   <div
                     key={task.id}
-                    className="rounded-xl border p-4 shadow-xs hover:shadow-sm transition-all"
+                    className="rounded-lg border p-4 shadow-xs hover:shadow-sm transition-all"
                     style={{
                       backgroundColor: 'var(--elevated)',
                       borderColor: 'var(--border-default)',
@@ -241,7 +241,7 @@ export default function MaintenancePage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
           <div 
-            className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+            className="w-full max-w-md rounded-lg border p-6 space-y-4 animate-fade-in-up"
             style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
           >
             <div className="flex items-center justify-between">
@@ -297,7 +297,7 @@ export default function MaintenancePage() {
                   placeholder="Provide details about the issue..." 
                   value={description} 
                   onChange={(e) => setDescription(e.target.value)}
-                  className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs h-20 outline-none focus-visible:border-[var(--primary-navy)]"
+                  className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs h-20 outline-none focus-visible:border-[var(--primary-navy)]"
                 />
               </div>
 
@@ -308,7 +308,7 @@ export default function MaintenancePage() {
                     id="mntPriority"
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as Priority)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
@@ -323,7 +323,7 @@ export default function MaintenancePage() {
                     id="mntAssignee"
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}
-                    className="mt-1 w-full rounded-[10px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
+                    className="mt-1 w-full rounded-[8px] border border-[var(--border-default)] bg-[var(--elevated)] px-3 py-2 text-xs"
                   >
                     <option value="Kevin Moore">Kevin Moore</option>
                     <option value="Lisa Tran">Lisa Tran</option>

@@ -185,7 +185,7 @@ export default function App() {
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-full border border-[#DDD8CF] bg-[#FFFFFF] text-sm font-semibold tracking-[0.24em] text-[#172A45]">AF</div>
           <div>
-            <div className="text-[0.95rem] font-semibold tracking-[0.24em] text-[#172A45] uppercase">AssetFlow</div>
+            <div className="text-[0.95rem] font-semibold tracking-[0.24em] text-[#172A45] uppercase">POPPY</div>
             <div className="text-sm text-[#5E6673]">Enterprise Asset & Resource Management</div>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function App() {
               Operational clarity for every asset your organization owns.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-8 text-[#5E6673]">
-              AssetFlow helps organizations track, allocate, maintain, audit, and analyze their assets through one calm, dependable platform.
+              POPPY helps organizations track, allocate, maintain, audit, and analyze their assets through one calm, dependable platform.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/dashboard">

@@ -1,5 +1,5 @@
 /* ========================================================================
-   AssetFlow — Design System Tokens
+   POPPY — Design System Tokens
    Enterprise Asset & Resource Management Platform
    
    Color Philosophy: Elegance through restraint.
@@ -17,43 +17,45 @@
   --font-size: 14px;
 
   /* ── Canvas & Surface System ────────────────────────────────────────── */
-  --canvas: #FCFBF8;           /* Snow White — page background */
-  --surface: #F6F4EF;          /* Porcelain — card/section backgrounds */
+  --canvas: #F0EEE9;           /* Cloud Dancer — page background */
+  --surface: #FAF8F4;          /* Ivory Mist — section backgrounds */
   --elevated: #FFFFFF;         /* White — raised elements */
-  --sidebar-bg: #F3F1EB;       /* Sidebar background */
+  --sidebar-bg: #F7F5F0;       /* Executive shell background */
 
   /* ── Primary & Accent ───────────────────────────────────────────────── */
-  --primary-navy: #172A45;     /* Oxford Navy — primary actions, text emphasis */
-  --primary-navy-hover: #1E3A5F;
-  --primary-navy-active: #0F1D30;
-  --accent-brass: #B08D57;     /* Heritage Brass — sparingly, premium CTAs */
-  --accent-brass-hover: #C4A06A;
-  --accent-brass-muted: rgba(176, 141, 87, 0.12);
+  --primary-navy: #14213D;     /* Oxford Navy — primary actions, text emphasis */
+  --primary-navy-hover: #1F3A5F;
+  --primary-navy-active: #0F172A;
+  --accent-brass: #BA9B5F;     /* Antique Gold — premium emphasis */
+  --accent-brass-hover: #C6A664;
+  --accent-brass-muted: rgba(186, 155, 95, 0.14);
+  --accent-ruby: #98111E;
+  --accent-ruby-muted: rgba(152, 17, 30, 0.09);
 
   /* ── Text System ────────────────────────────────────────────────────── */
-  --text-primary: #1A1A1A;
-  --text-secondary: #5E6673;
-  --text-tertiary: #8E95A2;
-  --text-inverse: #FCFBF8;
+  --text-primary: #1B1B1D;
+  --text-secondary: #5C6270;
+  --text-tertiary: #858B96;
+  --text-inverse: #FAF8F4;
   --text-on-primary: #FFFFFF;
 
   /* ── Border System ──────────────────────────────────────────────────── */
-  --border-default: #DDD8CF;
-  --border-subtle: #E8E4DC;
-  --border-strong: #C5BFB3;
-  --border-focus: #172A45;
+  --border-default: #D9D4CC;
+  --border-subtle: #E7E1D8;
+  --border-strong: #C8C2B8;
+  --border-focus: #14213D;
 
   /* ── Status Colors ──────────────────────────────────────────────────── */
-  --status-success: #295943;         /* Forest */
+  --status-success: #235347;         /* Forest */
   --status-success-bg: #F0F7F4;
   --status-success-border: #C5E0D3;
-  --status-warning: #A66B00;         /* Burnished Amber */
+  --status-warning: #B8860B;         /* Royal Gold */
   --status-warning-bg: #FFF8ED;
   --status-warning-border: #EDD5A3;
-  --status-danger: #7D1F2B;          /* Oxblood */
+  --status-danger: #B42335;          /* Ruby */
   --status-danger-bg: #FDF2F3;
   --status-danger-border: #E8C4C9;
-  --status-info: #355C7D;            /* Slate Blue */
+  --status-info: #1F3A5F;            /* Imperial Blue */
   --status-info-bg: #F0F4F8;
   --status-info-border: #C2D3E3;
 
@@ -73,17 +75,17 @@
 
   /* ── Radius Scale ───────────────────────────────────────────────────── */
   --radius-sm: 6px;
-  --radius-md: 10px;      /* Buttons, Inputs */
-  --radius-lg: 12px;      /* Cards */
-  --radius-xl: 16px;      /* Modals, large panels */
-  --radius-2xl: 20px;     /* Hero sections */
+  --radius-md: 8px;       /* Buttons, Inputs */
+  --radius-lg: 8px;       /* Cards */
+  --radius-xl: 12px;      /* Modals, large panels */
+  --radius-2xl: 14px;     /* Hero sections */
 
   /* ── Shadow Scale (minimal, almost invisible) ───────────────────────── */
-  --shadow-xs: 0 1px 2px rgba(23, 42, 69, 0.04);
-  --shadow-sm: 0 2px 4px rgba(23, 42, 69, 0.04), 0 1px 2px rgba(23, 42, 69, 0.02);
-  --shadow-md: 0 4px 12px rgba(23, 42, 69, 0.06), 0 1px 3px rgba(23, 42, 69, 0.03);
-  --shadow-lg: 0 8px 24px rgba(23, 42, 69, 0.06), 0 2px 6px rgba(23, 42, 69, 0.03);
-  --shadow-xl: 0 16px 40px rgba(23, 42, 69, 0.06);
+  --shadow-xs: 0 1px 2px rgba(20, 33, 61, 0.04);
+  --shadow-sm: 0 1px 2px rgba(20, 33, 61, 0.05), 0 8px 24px rgba(20, 33, 61, 0.03);
+  --shadow-md: 0 10px 30px rgba(20, 33, 61, 0.07), 0 1px 3px rgba(20, 33, 61, 0.04);
+  --shadow-lg: 0 18px 48px rgba(20, 33, 61, 0.08), 0 2px 6px rgba(20, 33, 61, 0.04);
+  --shadow-xl: 0 28px 70px rgba(20, 33, 61, 0.09);
 
   /* ── Transitions ────────────────────────────────────────────────────── */
   --transition-fast: 120ms ease;
@@ -129,7 +131,7 @@
   --sidebar-foreground: var(--text-primary);
   --sidebar-primary: var(--primary-navy);
   --sidebar-primary-foreground: var(--text-on-primary);
-  --sidebar-accent: rgba(23, 42, 69, 0.06);
+  --sidebar-accent: rgba(20, 33, 61, 0.06);
   --sidebar-accent-foreground: var(--primary-navy);
   --sidebar-border: var(--border-default);
   --sidebar-ring: var(--primary-navy);
@@ -164,9 +166,9 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-md: 8px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -176,7 +178,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* AssetFlow semantic colors for Tailwind */
+  /* POPPY semantic colors for Tailwind */
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);
   --color-elevated: var(--elevated);
@@ -216,7 +218,10 @@
   body {
     @apply bg-background text-foreground;
     line-height: 1.6;
-    letter-spacing: -0.006em;
+    letter-spacing: 0;
+    background:
+      linear-gradient(180deg, rgba(250, 248, 244, 0.62) 0%, rgba(240, 238, 233, 0) 340px),
+      var(--canvas);
   }
 
   /* Editorial typography hierarchy */
@@ -224,7 +229,7 @@
     font-size: 2rem;
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: -0.025em;
+    letter-spacing: 0;
     color: var(--primary-navy);
   }
 
@@ -232,7 +237,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.25;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     color: var(--primary-navy);
   }
 
@@ -240,7 +245,7 @@
     font-size: 1.125rem;
     font-weight: 600;
     line-height: 1.35;
-    letter-spacing: -0.015em;
+    letter-spacing: 0;
     color: var(--text-primary);
   }
 
@@ -305,7 +310,7 @@
 
   /* Selection */
   ::selection {
-    background: rgba(23, 42, 69, 0.12);
+    background: rgba(20, 33, 61, 0.12);
     color: var(--primary-navy);
   }
 }

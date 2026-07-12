@@ -183,7 +183,7 @@ export default function SettingsPage() {
         {/* ── Organization ─────────────────────────────────────────── */}
         <TabsContent value="organization">
           <div
-            className="rounded-xl border p-6"
+            className="rounded-lg border p-6"
             style={{
               backgroundColor: 'var(--elevated)',
               borderColor: 'var(--border-default)',
@@ -191,7 +191,7 @@ export default function SettingsPage() {
           >
             <form onSubmit={handleSaveOrg} className="space-y-5 max-w-lg">
               {orgSaved && (
-                <div className="flex items-center gap-2 rounded-[10px] border p-3 text-xs text-[var(--status-success)] bg-[var(--status-success-bg)] border-[var(--status-success-border)]">
+                <div className="flex items-center gap-2 rounded-[8px] border p-3 text-xs text-[var(--status-success)] bg-[var(--status-success-bg)] border-[var(--status-success-border)]">
                   <CheckCircle2 className="size-4" />
                   Organization details updated successfully.
                 </div>
@@ -240,7 +240,7 @@ export default function SettingsPage() {
             </Button>
           </div>
           <div
-            className="rounded-xl border overflow-hidden"
+            className="rounded-lg border overflow-hidden"
             style={{
               backgroundColor: 'var(--elevated)',
               borderColor: 'var(--border-default)',
@@ -317,7 +317,7 @@ export default function SettingsPage() {
           {isRoleModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
               <div 
-                className="w-full max-w-md rounded-xl border p-6 space-y-4 animate-fade-in-up"
+                className="w-full max-w-md rounded-lg border p-6 space-y-4 animate-fade-in-up"
                 style={{ backgroundColor: 'var(--elevated)', borderColor: 'var(--border-default)' }}
               >
                 <div className="flex items-center justify-between">
@@ -374,7 +374,7 @@ export default function SettingsPage() {
           <div className="space-y-4 max-w-2xl">
             {/* Two-Factor Authentication */}
             <div
-              className="rounded-xl border p-5 flex items-center justify-between"
+              className="rounded-lg border p-5 flex items-center justify-between"
               style={{
                 backgroundColor: 'var(--elevated)',
                 borderColor: 'var(--border-default)',
@@ -399,7 +399,7 @@ export default function SettingsPage() {
 
             {/* Session Timeout */}
             <div
-              className="rounded-xl border p-5"
+              className="rounded-lg border p-5"
               style={{
                 backgroundColor: 'var(--elevated)',
                 borderColor: 'var(--border-default)',
@@ -429,7 +429,7 @@ export default function SettingsPage() {
 
             {/* Password Policy */}
             <div
-              className="rounded-xl border p-5"
+              className="rounded-lg border p-5"
               style={{
                 backgroundColor: 'var(--elevated)',
                 borderColor: 'var(--border-default)',
@@ -464,7 +464,7 @@ export default function SettingsPage() {
         {/* ── Brand ────────────────────────────────────────────────── */}
         <TabsContent value="brand">
           <div
-            className="rounded-xl border p-6"
+            className="rounded-lg border p-6"
             style={{
               backgroundColor: 'var(--elevated)',
               borderColor: 'var(--border-default)',
@@ -513,7 +513,7 @@ export default function SettingsPage() {
         {/* ── Audit Logs ───────────────────────────────────────────── */}
         <TabsContent value="audit-logs">
           <div
-            className="rounded-xl border overflow-hidden"
+            className="rounded-lg border overflow-hidden"
             style={{
               backgroundColor: 'var(--elevated)',
               borderColor: 'var(--border-default)',
@@ -587,7 +587,7 @@ export default function SettingsPage() {
             {localIntegrations.map((integration: Integration) => (
               <div
                 key={integration.id}
-                className="rounded-xl border p-5"
+                className="rounded-lg border p-5"
                 style={{
                   backgroundColor: 'var(--elevated)',
                   borderColor: 'var(--border-default)',

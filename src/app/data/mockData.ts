@@ -1,5 +1,5 @@
 // ========================================================================
-// AssetFlow — Centralized Mock Data
+// POPPY — Centralized Mock Data
 // Realistic enterprise data for all views
 // ========================================================================
 
@@ -243,10 +243,10 @@ export const utilizationByCategory = [
 ];
 
 export const assetHealthDistribution = [
-  { name: 'Excellent', value: 1420, color: '#295943' },
-  { name: 'Good', value: 480, color: '#355C7D' },
-  { name: 'Fair', value: 168, color: '#A66B00' },
-  { name: 'Critical', value: 78, color: '#7D1F2B' },
+  { name: 'Excellent', value: 1420, color: '#235347' },
+  { name: 'Good', value: 480, color: '#14213D' },
+  { name: 'Fair', value: 168, color: '#BA9B5F' },
+  { name: 'Critical', value: 78, color: '#98111E' },
 ];
 
 export const monthlyMaintenanceData = [
@@ -303,7 +303,7 @@ export const assetTimeline = [
   { date: '2025-05-01', event: 'Transferred from Design to Engineering', type: 'transfer' as const, detail: 'Approved by Linda Patel' },
   { date: '2025-03-15', event: 'Audit verified', type: 'audit' as const, detail: 'Q1 2025 audit — confirmed at HQ East Floor 4' },
   { date: '2024-12-01', event: 'Allocated to James Park', type: 'allocation' as const, detail: 'Initial assignment' },
-  { date: '2024-03-15', event: 'Registered in AssetFlow', type: 'system' as const, detail: 'Purchased from Apple Business — PO #2024-0392' },
+  { date: '2024-03-15', event: 'Registered in POPPY', type: 'system' as const, detail: 'Purchased from Apple Business — PO #2024-0392' },
 ];
 
 // ── Navigation Items ───────────────────────────────────────────────────

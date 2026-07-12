@@ -1,5 +1,5 @@
 /* ========================================================================
-   AssetFlow — Global Styles
+   POPPY — Global Styles
    Utilities and base component styles
    ======================================================================== */
 
@@ -24,16 +24,16 @@
 .section-label {
   font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--status-info);
+  color: var(--accent-brass);
 }
 
 /* ── Metric / KPI Display ──────────────────────────────────────────────── */
 .metric-value {
   font-size: 2rem;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   font-variant-numeric: tabular-nums;
   color: var(--primary-navy);
   line-height: 1.1;
@@ -54,50 +54,9 @@
   box-shadow: 0 0 0 2px var(--canvas), 0 0 0 4px var(--primary-navy);
 }
 
-/* ── Animations ────────────────────────────────────────────────────────── */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn var(--transition-base) ease forwards;
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp var(--transition-slow) ease forwards;
-}
-
+/* ── Motion Policy ─────────────────────────────────────────────────────── */
+.animate-fade-in,
+.animate-fade-in-up,
 .animate-slide-in-left {
-  animation: slideInLeft var(--transition-slow) ease forwards;
+  animation: none;
 }
-
-/* ── Staggered entry ───────────────────────────────────────────────────── */
-.stagger-1 { animation-delay: 50ms; }
-.stagger-2 { animation-delay: 100ms; }
-.stagger-3 { animation-delay: 150ms; }
-.stagger-4 { animation-delay: 200ms; }
-.stagger-5 { animation-delay: 250ms; }
-.stagger-6 { animation-delay: 300ms; }

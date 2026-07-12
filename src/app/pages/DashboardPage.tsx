@@ -61,7 +61,7 @@ export default function DashboardPage() {
       />
 
       {/* ── Quick Actions ────────────────────────────────────── */}
-      <div className="mb-6 flex gap-2">
+      <div className="mb-6 flex flex-wrap gap-2">
         <Link to="/assets?new=true">
           <Button variant="secondary" size="sm">
             <Plus className="size-4" />
@@ -89,7 +89,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── KPI Row ──────────────────────────────────────────── */}
-      <div className="mb-6 grid grid-cols-4 gap-4">
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         <KPICard
           label="Total Assets"
           value={kpiData.totalAssets}
@@ -116,15 +116,16 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Main Grid ────────────────────────────────────────── */}
-      <div className="grid grid-cols-[1.4fr_0.6fr] gap-6">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.4fr_0.6fr]">
         {/* ── Left Column ─────────────────────────────────────── */}
         <div className="flex flex-col gap-6">
           {/* Recent Activity */}
           <div
-            className="rounded-xl border p-5"
+            className="rounded-lg border p-5"
             style={{
               borderColor: 'var(--border-default)',
               backgroundColor: 'var(--elevated)',
+              boxShadow: 'var(--shadow-sm)',
             }}
           >
             <div className="mb-4 flex items-center justify-between">
@@ -136,8 +137,8 @@ export default function DashboardPage() {
               </h2>
               <Link to="/notifications">
                 <button
-                  className="text-[0.75rem] font-medium cursor-pointer hover:underline"
-                  style={{ color: 'var(--primary-navy)' }}
+                    className="cursor-pointer text-[0.75rem] font-medium hover:underline"
+                    style={{ color: 'var(--accent-brass)' }}
                 >
                   View all
                 </button>
@@ -191,10 +192,11 @@ export default function DashboardPage() {
 
           {/* Pending Approvals */}
           <div
-            className="rounded-xl border p-5"
+            className="rounded-lg border p-5"
             style={{
               borderColor: 'var(--border-default)',
               backgroundColor: 'var(--elevated)',
+              boxShadow: 'var(--shadow-sm)',
             }}
           >
             <div className="mb-4 flex items-center gap-2">
@@ -207,7 +209,7 @@ export default function DashboardPage() {
               <span
                 className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[0.6875rem] font-medium"
                 style={{
-                  backgroundColor: 'rgba(23, 42, 69, 0.08)',
+                  backgroundColor: 'var(--accent-brass-muted)',
                   color: 'var(--primary-navy)',
                 }}
               >
@@ -224,9 +226,10 @@ export default function DashboardPage() {
                 {approvals.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between rounded-lg px-3 py-3 animate-fade-in"
+                    className="flex items-center justify-between rounded-lg border px-3 py-3"
                     style={{
                       backgroundColor: 'var(--surface)',
+                      borderColor: 'var(--border-subtle)',
                     }}
                   >
                     <div className="min-w-0">
@@ -235,7 +238,7 @@ export default function DashboardPage() {
                           className="rounded px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wide"
                           style={{
                             backgroundColor: 'var(--canvas)',
-                            color: 'var(--text-tertiary)',
+                            color: 'var(--accent-brass)',
                             border: '1px solid var(--border-default)',
                           }}
                         >
@@ -272,10 +275,11 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-6">
           {/* Utilization by Category */}
           <div
-            className="rounded-xl border p-5"
+            className="rounded-lg border p-5"
             style={{
               borderColor: 'var(--border-default)',
               backgroundColor: 'var(--elevated)',
+              boxShadow: 'var(--shadow-sm)',
             }}
           >
             <h2
@@ -299,13 +303,14 @@ export default function DashboardPage() {
                     border: '1px solid var(--border-default)',
                     backgroundColor: 'var(--elevated)',
                     fontSize: 12,
+                    boxShadow: 'var(--shadow-md)',
                   }}
                   formatter={(value: number) => [`${value}%`, 'Utilization']}
                 />
                 <Bar
                   dataKey="utilized"
                   fill="var(--primary-navy)"
-                  radius={[4, 4, 0, 0]}
+                  radius={[5, 5, 0, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -313,10 +318,11 @@ export default function DashboardPage() {
 
           {/* Asset Health */}
           <div
-            className="rounded-xl border p-5"
+            className="rounded-lg border p-5"
             style={{
               borderColor: 'var(--border-default)',
               backgroundColor: 'var(--elevated)',
+              boxShadow: 'var(--shadow-sm)',
             }}
           >
             <h2
@@ -341,12 +347,13 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{
-                      borderRadius: 8,
-                      border: '1px solid var(--border-default)',
-                      backgroundColor: 'var(--elevated)',
-                      fontSize: 12,
-                    }}
+                  contentStyle={{
+                    borderRadius: 8,
+                    border: '1px solid var(--border-default)',
+                    backgroundColor: 'var(--elevated)',
+                    fontSize: 12,
+                    boxShadow: 'var(--shadow-md)',
+                  }}
                   />
                 </PieChart>
               </ResponsiveContainer>

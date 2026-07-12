@@ -81,7 +81,7 @@ export default function ReportsPage() {
         {executiveMetrics.map((metric) => (
           <div
             key={metric.label}
-            className="rounded-xl border p-5"
+            className="rounded-lg border p-5"
             style={{
               backgroundColor: 'var(--elevated)',
               borderColor: 'var(--border-default)',
@@ -110,7 +110,7 @@ export default function ReportsPage() {
       <div className="grid grid-cols-2 gap-6">
         {/* Utilization by Category */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -151,7 +151,7 @@ export default function ReportsPage() {
 
         {/* Asset Health Distribution */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -217,7 +217,7 @@ export default function ReportsPage() {
 
         {/* Maintenance Trend */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
@@ -265,7 +265,7 @@ export default function ReportsPage() {
 
         {/* Lifecycle Distribution */}
         <div
-          className="rounded-xl border p-5"
+          className="rounded-lg border p-5"
           style={{
             backgroundColor: 'var(--elevated)',
             borderColor: 'var(--border-default)',
