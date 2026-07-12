@@ -3,43 +3,55 @@ import { useNavigate } from 'react-router';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
-import { CheckCircle2, Shield, Clock, BarChart3 } from 'lucide-react';
+import { CheckCircle2, Shield, Clock, BarChart3, Loader2 } from 'lucide-react';
+import { apiLogin, apiRegister, ApiError } from '@/app/lib/api';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   // Login State
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  
+
   // Signup State
   const [fullName, setFullName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  
+
   // Error / Status Message
   const [errorMsg, setErrorMsg] = useState('');
 
-  function handleLoginSubmit(e: FormEvent) {
+  async function handleLoginSubmit(e: FormEvent) {
     e.preventDefault();
     if (!loginEmail || !loginPassword) {
       setErrorMsg('Please fill in all credentials.');
       return;
     }
-    
-    // Store session
-    localStorage.setItem('af_auth', 'true');
-    localStorage.setItem('af_user_name', 'Alicia Chen');
-    localStorage.setItem('af_company_name', 'Meridian Industries');
-    localStorage.setItem('af_user_role', 'Operations Director');
+
+    setLoading(true);
     setErrorMsg('');
-    navigate('/dashboard');
+    try {
+      const user = await apiLogin(loginEmail, loginPassword);
+      localStorage.setItem('af_company_name', companyName || 'AssetFlow');
+      localStorage.setItem('af_user_name', user.full_name);
+      localStorage.setItem('af_user_role', user.role?.name === 'admin' ? 'Administrator' : user.role?.name === 'manager' ? 'Manager' : 'Employee');
+      navigate('/dashboard');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setErrorMsg(err.detail);
+      } else {
+        setErrorMsg('Unable to connect to server. Please ensure the backend is running.');
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleSignupSubmit(e: FormEvent) {
+  async function handleSignupSubmit(e: FormEvent) {
     e.preventDefault();
     if (!fullName || !signupEmail || !companyName || !signupPassword || !confirmPassword) {
       setErrorMsg('Please fill in all fields.');
@@ -54,13 +66,23 @@ export default function LoginPage() {
       return;
     }
 
-    // Store custom session
-    localStorage.setItem('af_auth', 'true');
-    localStorage.setItem('af_user_name', fullName);
-    localStorage.setItem('af_company_name', companyName);
-    localStorage.setItem('af_user_role', 'Administrator');
+    setLoading(true);
     setErrorMsg('');
-    navigate('/dashboard');
+    try {
+      const user = await apiRegister(signupEmail, fullName, signupPassword);
+      localStorage.setItem('af_company_name', companyName);
+      localStorage.setItem('af_user_name', user.full_name);
+      localStorage.setItem('af_user_role', user.role?.name === 'admin' ? 'Administrator' : 'Employee');
+      navigate('/dashboard');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setErrorMsg(err.detail);
+      } else {
+        setErrorMsg('Unable to connect to server. Please ensure the backend is running.');
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -211,6 +233,7 @@ export default function LoginPage() {
                   onChange={(e) => setLoginEmail(e.target.value)}
                   required
                   autoComplete="email"
+                  disabled={loading}
                 />
               </div>
 
@@ -234,11 +257,19 @@ export default function LoginPage() {
                   onChange={(e) => setLoginPassword(e.target.value)}
                   required
                   autoComplete="current-password"
+                  disabled={loading}
                 />
               </div>
 
-              <Button type="submit" className="w-full" size="lg">
-                Sign in
+              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Signing in…
+                  </span>
+                ) : (
+                  'Sign in'
+                )}
               </Button>
             </form>
           ) : (
@@ -252,6 +283,7 @@ export default function LoginPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -264,6 +296,7 @@ export default function LoginPage() {
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -276,6 +309,7 @@ export default function LoginPage() {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -288,6 +322,7 @@ export default function LoginPage() {
                   value={signupPassword}
                   onChange={(e) => setSignupPassword(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -300,11 +335,19 @@ export default function LoginPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
 
-              <Button type="submit" className="w-full mt-2" size="lg">
-                Create Account
+              <Button type="submit" className="w-full mt-2" size="lg" disabled={loading}>
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Creating account…
+                  </span>
+                ) : (
+                  'Create Account'
+                )}
               </Button>
             </form>
           )}
@@ -350,4 +393,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
