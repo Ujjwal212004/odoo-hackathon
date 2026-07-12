@@ -4,7 +4,7 @@
 >
 > ![Coding GIF](https://media.giphy.com/media/SvZvO5c0VabM0/giphy.gif)
 
-POPPY is a modern, full-stack ERP system that streamlines enterprise asset tracking, allocation, maintenance, resource booking, and audit management through an intelligent, role-based platform. Built for the Hackathon 2026 with production-ready architecture.
+POPPY is a modern, full-stack ERP system that streamlines enterprise asset tracking, allocation, maintenance, resource booking, and audit management through an intelligent, role-based platform. Built [...]
 
 ---
 
@@ -19,7 +19,7 @@ POPPY is a modern, full-stack ERP system that streamlines enterprise asset track
 | 📋 **Audit Management** | Automated audit cycles with discrepancy reporting | ![Checklist Icon](https://media.giphy.com/media/l0HlQaQ6HzIbYWI0w/giphy.gif) |
 | 📊 **Analytics Dashboard** | Real-time insights and performance metrics | ![Charts Icon](https://media.giphy.com/media/3o6Zt6KHxJTbXCnSvu/giphy.gif) |
 | 🤖 **AI Features** | Gemini-powered predictions and recommendations | ![AI Icon](https://media.giphy.com/media/xT9IgEx8SbW7gf6Sj2/giphy.gif) |
-| 👥 **RBAC** | Role-based access control for security | ![Security Icon](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif) |
+| 👥 **RBAC** | Role-based access control for security | ![Security Icon](https://media.giphy.com/media/3o85xIO33l7RlmLGyI/giphy.gif) |
 
 ---
 
@@ -31,24 +31,24 @@ POPPY is a modern, full-stack ERP system that streamlines enterprise asset track
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
 │  📱 FRONTEND (React 18.3 + Vite + Tailwind)                │
-│  ![Frontend GIF](https://media.giphy.com/media/g9Ys7m02             │
+│  ![Frontend GIF](https://media.giphy.com/media/13HgzMcaIEQyJi/giphy.gif) │
 │  ├─ Modern UI Components (Radix UI + shadcn)             │
 │  ├─ Drag-and-Drop Support (react-dnd)                     │
 │  ├─ Real-time Charts (recharts)                           │
 │  └─ State Management (React Router)                        │
 │                                                              │
 │              🔗 REST API (JSON)                            │
-│  ![API GIF](https://media.giphy.com/media/3oKIPf3C7HqqYE6209  │
+│  ![API GIF](https://media.giphy.com/media/3oKIPf3C7HqqYE6209/giphy.gif)  │
 │                                                              │
 │  🔧 BACKEND (FastAPI 0.115 + Python)                      │
-│  ![Backend GIF](https://media.giphy.com/media/l0Hlv         │
+│  ![Backend GIF](https://media.giphy.com/media/l3q2K6K0BNWA0T7P5L/giphy.gif) │
 │  ├─ JWT Authentication + RBAC                             │
 │  ├─ Pydantic v2 Validation                                │
 │  ├─ Async Request Handling                                │
 │  └─ AI Integration (Google Gemini)                        │
 │                                                              │
 │  🗄️ DATABASE (MongoDB or mongomock)                        │
-│  ![Database GIF](https://media.giphy.com/media/3oKIPj       │
+│  ![Database GIF](https://media.giphy.com/media/KAq5w47R0reTf6MsxJ/giphy.gif) │
 │  ├─ Flexible Schema for Complex Assets                    │
 │  ├─ Indexed Collections for Fast Queries                  │
 │  └─ Automatic Data Seeding                                │
@@ -89,7 +89,7 @@ Testing:         pytest + mongomock ✅
 AI:              Google Gemini API (optional) 🤖
 ```
 
-![Python GIF](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif)
+![Python GIF](https://media.giphy.com/media/KzJkzjggfGN5Py6nkT/giphy.gif)
 
 ---
 
@@ -154,7 +154,7 @@ Database (MongoDB) → Response (Pydantic Model)
 
 ### **Backend Setup** (backend branch)
 
-![Setup GIF](https://media.giphy.com/media/l0MYY7jVWo5QSTmXm/giphy.gif)
+![Setup GIF](https://media.giphy.com/media/3o6ZtpgLVvzhMUYktO/giphy.gif)
 
 ```bash
 # 1. Clone & switch to backend branch
@@ -182,7 +182,7 @@ uvicorn app.main:app --reload --port 8000
 
 ### **Frontend Setup** (main branch)
 
-![Frontend Setup GIF](https://media.giphy.com/media/l0MYY7jVWo5QSTmXm/giphy.gif)
+![Frontend Setup GIF](https://media.giphy.com/media/3o7TKB3sxV76cq5XwI/giphy.gif)
 
 ```bash
 # 1. Switch to main branch
@@ -202,7 +202,7 @@ npm run dev
 
 ### **Run Tests**
 
-![Testing GIF](https://media.giphy.com/media/l0HlTy9x8FZo0/giphy.gif)
+![Testing GIF](https://media.giphy.com/media/3o7WTUAI0iafnD8VsI/giphy.gif)
 
 ```bash
 # Backend tests (uses mongomock)
@@ -218,7 +218,7 @@ pytest tests/ -v
 
 **Base URL:** `http://localhost:8000/api/v1`
 
-![API GIF](https://media.giphy.com/media/l3q2K6K0BNW2ZZn3W/giphy.gif)
+![API GIF](https://media.giphy.com/media/3ohzdJz18z5Hg4L6B2/giphy.gif)
 
 ### **Authentication 🔐**
 
@@ -229,7 +229,7 @@ pytest tests/ -v
 | `POST` | `/auth/refresh` | Refresh access token |
 | `GET` | `/auth/me` | Get current user profile |
 
-![Login GIF](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif)
+![Login GIF](https://media.giphy.com/media/3o7TKQ5AYfQHfJHGbm/giphy.gif)
 
 ### **Assets 📦**
 
@@ -250,7 +250,7 @@ pytest tests/ -v
 | `PATCH` | `/allocations/{id}/approve` | Approve pending allocation |
 | `PATCH` | `/allocations/{id}/complete` | Return asset (complete) |
 
-![Allocation GIF](https://media.giphy.com/media/l0HlTy9x8FZo0/giphy.gif)
+![Allocation GIF](https://media.giphy.com/media/xT9IgEx1pf0x3bRGFq/giphy.gif)
 
 ### **Bookings 🗓️**
 
@@ -267,7 +267,7 @@ pytest tests/ -v
 | `GET` | `/maintenance` | List maintenance tickets |
 | `PATCH` | `/maintenance/{id}/resolve` | Resolve with notes |
 
-![Maintenance GIF](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif)
+![Maintenance GIF](https://media.giphy.com/media/l0MYSvToXi85TKx7W/giphy.gif)
 
 ### **Audits 📋**
 
@@ -295,7 +295,7 @@ pytest tests/ -v
 | `GET` | `/dashboard` | Aggregated stats (cached) |
 | `POST` | `/reports/{type}` | Generate report (PDF/CSV) |
 
-![Dashboard GIF](https://media.giphy.com/media/3o7TKU9qKTrM5gAEfu/giphy.gif)
+![Dashboard GIF](https://media.giphy.com/media/3ohzdKdjqb7hNYKEla/giphy.gif)
 
 ---
 
@@ -325,7 +325,7 @@ LOG_LEVEL=INFO
 
 ## 🎨 Frontend Features Showcase
 
-![UI Components GIF](https://media.giphy.com/media/l0HlDy9x8FZo0XO1i/giphy.gif)
+![UI Components GIF](https://media.giphy.com/media/3o7TKBhCvs2Jc7ksGk/giphy.gif)
 
 ✨ **UI Components:**
 - Responsive buttons, cards, dialogs, forms
@@ -346,7 +346,7 @@ LOG_LEVEL=INFO
 
 ## 📈 Data Flow Example: Asset Allocation
 
-![Data Flow GIF](https://media.giphy.com/media/l3q2K6K0BNW2ZZn3W/giphy.gif)
+![Data Flow GIF](https://media.giphy.com/media/l0MYSn4jz1M0iP6Z2/giphy.gif)
 
 ```
 User Action (Frontend) 👆
@@ -368,7 +368,7 @@ UI updates in real-time 🎬
 
 ## 🧪 Testing
 
-![Test GIF](https://media.giphy.com/media/l0HlTy9x8FZo0/giphy.gif)
+![Test GIF](https://media.giphy.com/media/l0HlU7H8zB7yeVPAQ/giphy.gif)
 
 ```bash
 # Run all backend tests
@@ -402,7 +402,7 @@ POPPY includes **Google Gemini API** integration for:
 
 ## 🔑 Key Design Decisions
 
-![Decision Making GIF](https://media.giphy.com/media/l0HlTy9x8FZo0XO1i/giphy.gif)
+![Decision Making GIF](https://media.giphy.com/media/3o7TKSn6HGU5GqCnPy/giphy.gif)
 
 ✅ **Separate Branches:** Frontend & backend isolated for clarity
 ✅ **MongoDB/mongomock:** Zero-setup local development
@@ -416,7 +416,7 @@ POPPY includes **Google Gemini API** integration for:
 
 ## 🛠️ Development Workflow
 
-![Dev Workflow GIF](https://media.giphy.com/media/l0MYY7jVWo5QSTmXm/giphy.gif)
+![Dev Workflow GIF](https://media.giphy.com/media/l3q2K6K0BNWaI8Ou0/giphy.gif)
 
 ```bash
 # Terminal 1: Backend
@@ -444,7 +444,7 @@ pytest tests/ -v --watch
 
 ## 🎓 Learning Path
 
-![Learning GIF](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif)
+![Learning GIF](https://media.giphy.com/media/l0MYcTZ1aG7AZI3AQ/giphy.gif)
 
 1. **Start Backend:**
    - Read `backend/app/main.py` → understand app setup
@@ -465,7 +465,7 @@ pytest tests/ -v --watch
 
 ## 🚀 Deployment Ready
 
-![Deploy GIF](https://media.giphy.com/media/l0HlTy9x8FZo0XO1i/giphy.gif)
+![Deploy GIF](https://media.giphy.com/media/l0HlNr2qVaKdqkMTA/giphy.gif)
 
 ✅ Production-quality code
 ✅ Comprehensive error handling
@@ -482,7 +482,7 @@ pytest tests/ -v --watch
 
 Built for **Hackathon 2026** 🎉
 
-![Hackathon GIF](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif)
+![Hackathon GIF](https://media.giphy.com/media/l0MYxZ0BRJnIKNUbm/giphy.gif)
 
 **Repository:** [Ujjwal212004/odoo-hackathon](https://github.com/Ujjwal212004/odoo-hackathon)
 
@@ -500,7 +500,7 @@ Built for **Hackathon 2026** 🎉
 
 ## 🎉 Let's Ship It!
 
-![Success GIF](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif)
+![Success GIF](https://media.giphy.com/media/l0HlKvwqXzH5TMXBY/giphy.gif)
 
 **Happy coding!** 
 
@@ -514,4 +514,3 @@ Built for **Hackathon 2026** 🎉
 **Made with ❤️ for Hackathon 2026** 🏆
 ---
 **Developed and Engineered by Meet Limbachiya, Siddh Patel and Ujjwal Bharambe** 🏆
-
