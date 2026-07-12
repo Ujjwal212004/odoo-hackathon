@@ -512,3 +512,5 @@ Built for **Hackathon 2026** 🎉
 ---
 
 **Made with ❤️ for Hackathon 2026** 🏆
+**Developed and Engineered by Meet Limbachiya, Siddh Patel and Ujjwal Bharambe** 🏆
+
