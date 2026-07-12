@@ -9,7 +9,9 @@ class Settings(BaseSettings):
 
     app_name: str = "AssetFlow API"
     environment: str = "development"
-    database_url: str = "sqlite:///./assetflow.db"
+    mongodb_uri: str = "mongodb://localhost:27017"
+    mongodb_database: str = "assetflow"
+    mongo_use_mock: bool = False
     jwt_secret_key: str = Field(default="dev-only-change-me", min_length=16)
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
@@ -26,11 +28,7 @@ class Settings(BaseSettings):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
 
-    @property
-    def is_test(self) -> bool:
-        return self.environment == "test"
 
-
-@lru_cache
+@lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()

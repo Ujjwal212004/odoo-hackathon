@@ -1,61 +1,34 @@
-from datetime import UTC, datetime
+"""AssetFlow API routes — all endpoints under /api/v1."""
+
+from __future__ import annotations
+
 from typing import Any
 
-from fastapi import APIRouter, Depends, Query, Request, status
-from sqlalchemy import select
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, Query, Request
 
-from app.database import get_db
 from app.dependencies import client_ip, get_current_user, require_permissions
-from app.models import (
-    ActivityLog,
-    Allocation,
-    Asset,
-    AssetCategory,
-    AssetStatus,
-    AuditCycle,
-    AuditItem,
-    Booking,
-    Department,
-    Maintenance,
-    Notification,
-    Transfer,
-    User,
-)
+from app.models import AssetStatus
 from app.schemas import (
     AIChatRequest,
     AIResponse,
     AllocationCreate,
-    AllocationRead,
     AssetCreate,
-    AssetRead,
     AssetUpdate,
     AuditCycleCreate,
-    AuditCycleRead,
-    AuditItemRead,
     BookingCreate,
-    BookingRead,
     CategoryCreate,
-    CategoryRead,
     DepartmentCreate,
-    DepartmentRead,
     LoginRequest,
     MaintenanceCreate,
-    MaintenanceRead,
     Message,
-    NotificationRead,
-    Page,
     RefreshRequest,
     TokenResponse,
     TransferCreate,
-    TransferRead,
     UserCreate,
-    UserRead,
 )
 from app.services import (
-    activity,
     ai_generate,
-    asset_query,
+    asset_list,
     authenticate,
     create_allocation,
     create_asset,
@@ -67,224 +40,367 @@ from app.services import (
     create_transfer,
     dashboard,
     generate_report,
-    paginate,
+    list_activity,
+    list_allocations,
+    list_audit_items,
+    list_audits,
+    list_bookings,
+    list_categories,
+    list_departments,
+    list_maintenance,
+    list_notifications,
+    log_activity,
+    notify,
+    public_user,
     refresh_tokens,
     register_user,
+    soft_delete_asset,
     update_asset,
+    approve_allocation,
+    complete_allocation,
+    resolve_maintenance,
+    mark_notification_read,
 )
+from app.database import get_store
 
 
 router = APIRouter(prefix="/api/v1")
 
+
+# ── Health ──────────────────────────────────────────────────────────────
 
 @router.get("/health", tags=["system"])
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@router.post("/auth/register", response_model=UserRead, status_code=status.HTTP_201_CREATED, tags=["auth"])
-def register(payload: UserCreate, request: Request, db: Session = Depends(get_db)) -> User:
-    user = register_user(db, payload)
-    activity(db, user, "auth.registered", "user", user.id, ip_address=client_ip(request))
-    db.commit()
+# ── Auth ────────────────────────────────────────────────────────────────
+
+@router.post("/auth/register", status_code=201, tags=["auth"])
+def register(payload: UserCreate, request: Request) -> dict[str, Any]:
+    user = register_user(payload)
+    store = get_store()
+    actor = {"_id": user["id"], **user}
+    log_activity(store, actor, "auth.registered", "user", user["id"], ip_address=client_ip(request))
     return user
 
 
-@router.post("/auth/login", response_model=TokenResponse, tags=["auth"])
-def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)) -> TokenResponse:
-    user, access_token, refresh_token = authenticate(db, str(payload.email), payload.password)
-    activity(db, user, "auth.login", "user", user.id, ip_address=client_ip(request))
-    db.commit()
+@router.post("/auth/login", tags=["auth"])
+def login(payload: LoginRequest, request: Request) -> TokenResponse:
+    user, access_token, refresh_token = authenticate(str(payload.email), payload.password)
+    store = get_store()
+    log_activity(store, {"_id": user["id"], **user}, "auth.login", "user", user["id"], ip_address=client_ip(request))
     return TokenResponse(access_token=access_token, refresh_token=refresh_token)
 
 
-@router.post("/auth/refresh", response_model=TokenResponse, tags=["auth"])
-def refresh(payload: RefreshRequest, db: Session = Depends(get_db)) -> TokenResponse:
-    _, access_token, refresh_token = refresh_tokens(db, payload.refresh_token)
+@router.post("/auth/refresh", tags=["auth"])
+def refresh(payload: RefreshRequest) -> TokenResponse:
+    _, access_token, refresh_token = refresh_tokens(payload.refresh_token)
     return TokenResponse(access_token=access_token, refresh_token=refresh_token)
 
 
-@router.get("/auth/me", response_model=UserRead, tags=["auth"])
-def me(user: User = Depends(get_current_user)) -> User:
-    return user
+@router.get("/auth/me", tags=["auth"])
+def me(user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    store = get_store()
+    return public_user(store, user)
 
 
-@router.post("/departments", response_model=DepartmentRead, status_code=status.HTTP_201_CREATED, tags=["departments"])
-def add_department(payload: DepartmentCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("departments:write"))) -> Department:
-    return create_department(db, payload, user)
+# ── Departments ─────────────────────────────────────────────────────────
+
+@router.post("/departments", status_code=201, tags=["departments"])
+def add_department(
+    payload: DepartmentCreate,
+    user: dict[str, Any] = Depends(require_permissions("departments:write")),
+) -> dict[str, Any]:
+    return create_department(payload, user)
 
 
-@router.get("/departments", response_model=Page[DepartmentRead], tags=["departments"])
-def list_departments(
+@router.get("/departments", tags=["departments"])
+def list_departments_endpoint(
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    db: Session = Depends(get_db),
-    _: User = Depends(require_permissions("departments:read")),
-) -> Page[DepartmentRead]:
-    items, total = paginate(select(Department).where(Department.deleted_at.is_(None)).order_by(Department.name), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+    _: dict[str, Any] = Depends(require_permissions("departments:read")),
+) -> dict[str, Any]:
+    return list_departments(limit, offset)
 
 
-@router.post("/categories", response_model=CategoryRead, status_code=status.HTTP_201_CREATED, tags=["categories"])
-def add_category(payload: CategoryCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("categories:write"))) -> AssetCategory:
-    return create_category(db, payload, user)
+# ── Categories ──────────────────────────────────────────────────────────
+
+@router.post("/categories", status_code=201, tags=["categories"])
+def add_category(
+    payload: CategoryCreate,
+    user: dict[str, Any] = Depends(require_permissions("categories:write")),
+) -> dict[str, Any]:
+    return create_category(payload, user)
 
 
-@router.get("/categories", response_model=Page[CategoryRead], tags=["categories"])
-def list_categories(
+@router.get("/categories", tags=["categories"])
+def list_categories_endpoint(
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    db: Session = Depends(get_db),
-    _: User = Depends(require_permissions("categories:read")),
-) -> Page[CategoryRead]:
-    items, total = paginate(select(AssetCategory).where(AssetCategory.deleted_at.is_(None)).order_by(AssetCategory.name), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+    _: dict[str, Any] = Depends(require_permissions("categories:read")),
+) -> dict[str, Any]:
+    return list_categories(limit, offset)
 
 
-@router.post("/assets", response_model=AssetRead, status_code=status.HTTP_201_CREATED, tags=["assets"])
-def add_asset(payload: AssetCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("assets:write"))) -> Asset:
-    return create_asset(db, payload, user)
+# ── Assets ──────────────────────────────────────────────────────────────
+
+@router.post("/assets", status_code=201, tags=["assets"])
+def add_asset(
+    payload: AssetCreate,
+    user: dict[str, Any] = Depends(require_permissions("assets:write")),
+) -> dict[str, Any]:
+    return create_asset(payload, user)
 
 
-@router.get("/assets", response_model=Page[AssetRead], tags=["assets"])
+@router.get("/assets", tags=["assets"])
 def list_assets(
     search: str | None = None,
     status_filter: AssetStatus | None = Query(default=None, alias="status"),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    db: Session = Depends(get_db),
-    _: User = Depends(require_permissions("assets:read")),
-) -> Page[AssetRead]:
-    items, total = paginate(asset_query(search, status_filter), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    return asset_list(limit, offset, search, status_filter)
 
 
-@router.get("/assets/{asset_id}", response_model=AssetRead, tags=["assets"])
-def get_asset(asset_id: str, db: Session = Depends(get_db), _: User = Depends(require_permissions("assets:read"))) -> Asset:
-    from app.services import get_required
-
-    return get_required(db, Asset, asset_id)
-
-
-@router.patch("/assets/{asset_id}", response_model=AssetRead, tags=["assets"])
-def patch_asset(asset_id: str, payload: AssetUpdate, db: Session = Depends(get_db), user: User = Depends(require_permissions("assets:write"))) -> Asset:
-    return update_asset(db, asset_id, payload, user)
-
-
-@router.post("/allocations", response_model=AllocationRead, status_code=status.HTTP_201_CREATED, tags=["allocations"])
-def add_allocation(payload: AllocationCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("allocations:write"))) -> Allocation:
-    return create_allocation(db, payload, user)
+@router.get("/assets/{asset_id}", tags=["assets"])
+def get_asset(
+    asset_id: str,
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    from app.services import get_required, public_asset
+    store = get_store()
+    doc = get_required(store.assets, asset_id, "Asset")
+    return public_asset(store, doc)
 
 
-@router.get("/allocations", response_model=Page[AllocationRead], tags=["allocations"])
-def list_allocations(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), db: Session = Depends(get_db), _: User = Depends(require_permissions("assets:read"))) -> Page[AllocationRead]:
-    items, total = paginate(select(Allocation).where(Allocation.deleted_at.is_(None)).order_by(Allocation.created_at.desc()), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+@router.patch("/assets/{asset_id}", tags=["assets"])
+def patch_asset(
+    asset_id: str,
+    payload: AssetUpdate,
+    user: dict[str, Any] = Depends(require_permissions("assets:write")),
+) -> dict[str, Any]:
+    return update_asset(asset_id, payload, user)
 
 
-@router.post("/transfers", response_model=TransferRead, status_code=status.HTTP_201_CREATED, tags=["transfers"])
-def add_transfer(payload: TransferCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("transfers:write"))) -> Transfer:
-    return create_transfer(db, payload, user)
+@router.delete("/assets/{asset_id}", tags=["assets"])
+def delete_asset(
+    asset_id: str,
+    user: dict[str, Any] = Depends(require_permissions("assets:write")),
+) -> Message:
+    soft_delete_asset(asset_id, user)
+    return Message(message="Asset deleted")
 
 
-@router.get("/transfers", response_model=Page[TransferRead], tags=["transfers"])
-def list_transfers(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), db: Session = Depends(get_db), _: User = Depends(require_permissions("assets:read"))) -> Page[TransferRead]:
-    items, total = paginate(select(Transfer).where(Transfer.deleted_at.is_(None)).order_by(Transfer.created_at.desc()), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+# ── Allocations ─────────────────────────────────────────────────────────
+
+@router.post("/allocations", status_code=201, tags=["allocations"])
+def add_allocation(
+    payload: AllocationCreate,
+    user: dict[str, Any] = Depends(require_permissions("allocations:write")),
+) -> dict[str, Any]:
+    return create_allocation(payload, user)
 
 
-@router.post("/bookings", response_model=BookingRead, status_code=status.HTTP_201_CREATED, tags=["bookings"])
-def add_booking(payload: BookingCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("bookings:write"))) -> Booking:
-    return create_booking(db, payload, user)
+@router.get("/allocations", tags=["allocations"])
+def list_allocations_endpoint(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    return list_allocations(limit, offset)
 
 
-@router.get("/bookings", response_model=Page[BookingRead], tags=["bookings"])
-def list_bookings(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), db: Session = Depends(get_db), _: User = Depends(require_permissions("assets:read"))) -> Page[BookingRead]:
-    items, total = paginate(select(Booking).where(Booking.deleted_at.is_(None)).order_by(Booking.starts_at.desc()), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+@router.patch("/allocations/{allocation_id}/approve", tags=["allocations"])
+def approve_allocation_endpoint(
+    allocation_id: str,
+    user: dict[str, Any] = Depends(require_permissions("allocations:write")),
+) -> dict[str, Any]:
+    return approve_allocation(allocation_id, user)
 
 
-@router.post("/maintenance", response_model=MaintenanceRead, status_code=status.HTTP_201_CREATED, tags=["maintenance"])
-def add_maintenance(payload: MaintenanceCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("maintenance:write"))) -> Maintenance:
-    return create_maintenance(db, payload, user)
+@router.patch("/allocations/{allocation_id}/complete", tags=["allocations"])
+def complete_allocation_endpoint(
+    allocation_id: str,
+    user: dict[str, Any] = Depends(require_permissions("allocations:write")),
+) -> dict[str, Any]:
+    return complete_allocation(allocation_id, user)
 
 
-@router.get("/maintenance", response_model=Page[MaintenanceRead], tags=["maintenance"])
-def list_maintenance(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), db: Session = Depends(get_db), _: User = Depends(require_permissions("assets:read"))) -> Page[MaintenanceRead]:
-    items, total = paginate(select(Maintenance).where(Maintenance.deleted_at.is_(None)).order_by(Maintenance.created_at.desc()), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+# ── Transfers ───────────────────────────────────────────────────────────
+
+@router.post("/transfers", status_code=201, tags=["transfers"])
+def add_transfer(
+    payload: TransferCreate,
+    user: dict[str, Any] = Depends(require_permissions("transfers:write")),
+) -> dict[str, Any]:
+    return create_transfer(payload, user)
 
 
-@router.post("/audits", response_model=AuditCycleRead, status_code=status.HTTP_201_CREATED, tags=["audits"])
-def add_audit(payload: AuditCycleCreate, db: Session = Depends(get_db), user: User = Depends(require_permissions("audits:write"))) -> AuditCycle:
-    return create_audit_cycle(db, payload, user)
+@router.get("/transfers", tags=["transfers"])
+def list_transfers_endpoint(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    return list_transfers(limit, offset)
 
 
-@router.get("/audits", response_model=Page[AuditCycleRead], tags=["audits"])
-def list_audits(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), db: Session = Depends(get_db), _: User = Depends(require_permissions("assets:read"))) -> Page[AuditCycleRead]:
-    items, total = paginate(select(AuditCycle).where(AuditCycle.deleted_at.is_(None)).order_by(AuditCycle.created_at.desc()), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+# ── Bookings ────────────────────────────────────────────────────────────
+
+@router.post("/bookings", status_code=201, tags=["bookings"])
+def add_booking(
+    payload: BookingCreate,
+    user: dict[str, Any] = Depends(require_permissions("bookings:write")),
+) -> dict[str, Any]:
+    return create_booking(payload, user)
 
 
-@router.get("/audits/{audit_id}/items", response_model=Page[AuditItemRead], tags=["audits"])
-def list_audit_items(audit_id: str, limit: int = Query(100, ge=1, le=500), offset: int = Query(0, ge=0), db: Session = Depends(get_db), _: User = Depends(require_permissions("assets:read"))) -> Page[AuditItemRead]:
-    items, total = paginate(select(AuditItem).where(AuditItem.audit_cycle_id == audit_id, AuditItem.deleted_at.is_(None)), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+@router.get("/bookings", tags=["bookings"])
+def list_bookings_endpoint(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    return list_bookings(limit, offset)
 
+
+# ── Maintenance ─────────────────────────────────────────────────────────
+
+@router.post("/maintenance", status_code=201, tags=["maintenance"])
+def add_maintenance(
+    payload: MaintenanceCreate,
+    user: dict[str, Any] = Depends(require_permissions("maintenance:write")),
+) -> dict[str, Any]:
+    return create_maintenance(payload, user)
+
+
+@router.get("/maintenance", tags=["maintenance"])
+def list_maintenance_endpoint(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    return list_maintenance(limit, offset)
+
+
+@router.patch("/maintenance/{maintenance_id}/resolve", tags=["maintenance"])
+def resolve_maintenance_endpoint(
+    maintenance_id: str,
+    resolution: str = Query(..., min_length=5),
+    user: dict[str, Any] = Depends(require_permissions("maintenance:write")),
+) -> dict[str, Any]:
+    return resolve_maintenance(maintenance_id, resolution, user)
+
+
+# ── Audits ──────────────────────────────────────────────────────────────
+
+@router.post("/audits", status_code=201, tags=["audits"])
+def add_audit(
+    payload: AuditCycleCreate,
+    user: dict[str, Any] = Depends(require_permissions("audits:write")),
+) -> dict[str, Any]:
+    return create_audit_cycle(payload, user)
+
+
+@router.get("/audits", tags=["audits"])
+def list_audits_endpoint(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    return list_audits(limit, offset)
+
+
+@router.get("/audits/{audit_id}/items", tags=["audits"])
+def list_audit_items_endpoint(
+    audit_id: str,
+    limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+    _: dict[str, Any] = Depends(require_permissions("assets:read")),
+) -> dict[str, Any]:
+    return list_audit_items(audit_id, limit, offset)
+
+
+# ── Dashboard & Reports ────────────────────────────────────────────────
 
 @router.get("/dashboard", tags=["dashboard"])
-def dashboard_summary(db: Session = Depends(get_db), _: User = Depends(require_permissions("reports:read"))) -> dict[str, Any]:
-    return dashboard(db)
+def dashboard_summary(
+    _: dict[str, Any] = Depends(require_permissions("reports:read")),
+) -> dict[str, Any]:
+    return dashboard()
 
 
 @router.post("/reports/{report_type}", tags=["reports"])
-def create_report(report_type: str, db: Session = Depends(get_db), user: User = Depends(require_permissions("reports:read"))) -> dict[str, Any]:
-    report = generate_report(db, report_type, user)
-    return {"id": report.id, "name": report.name, "report_type": report.report_type, "payload": report.payload}
+def create_report(
+    report_type: str,
+    user: dict[str, Any] = Depends(require_permissions("reports:read")),
+) -> dict[str, Any]:
+    return generate_report(report_type, user)
 
 
-@router.get("/notifications", response_model=Page[NotificationRead], tags=["notifications"])
-def list_notifications(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), db: Session = Depends(get_db), user: User = Depends(require_permissions("notifications:read"))) -> Page[NotificationRead]:
-    items, total = paginate(select(Notification).where(Notification.user_id == user.id, Notification.deleted_at.is_(None)).order_by(Notification.created_at.desc()), db, limit, offset)
-    return Page(items=items, total=total, limit=limit, offset=offset)
+# ── Notifications ───────────────────────────────────────────────────────
 
+@router.get("/notifications", tags=["notifications"])
+def list_notifications_endpoint(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    user: dict[str, Any] = Depends(require_permissions("notifications:read")),
+) -> dict[str, Any]:
+    return list_notifications(user["_id"], limit, offset)
+
+
+@router.patch("/notifications/{notification_id}/read", tags=["notifications"])
+def mark_notification_read_endpoint(
+    notification_id: str,
+    user: dict[str, Any] = Depends(require_permissions("notifications:read")),
+) -> Message:
+    mark_notification_read(notification_id, user["_id"])
+    return Message(message="Notification marked as read")
+
+
+# ── Activity Logs ───────────────────────────────────────────────────────
 
 @router.get("/activity-logs", tags=["activity"])
-def list_activity(limit: int = Query(100, ge=1, le=500), offset: int = Query(0, ge=0), db: Session = Depends(get_db), _: User = Depends(require_permissions("activity:read"))) -> dict[str, Any]:
-    items, total = paginate(select(ActivityLog).where(ActivityLog.deleted_at.is_(None)).order_by(ActivityLog.created_at.desc()), db, limit, offset)
-    return {"items": [{"id": item.id, "action": item.action, "entity_type": item.entity_type, "entity_id": item.entity_id, "created_at": item.created_at} for item in items], "total": total, "limit": limit, "offset": offset}
+def list_activity_endpoint(
+    limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+    _: dict[str, Any] = Depends(require_permissions("activity:read")),
+) -> dict[str, Any]:
+    return list_activity(limit, offset)
 
 
-@router.post("/ai/chat", response_model=AIResponse, tags=["ai"])
-async def ai_chat(payload: AIChatRequest, db: Session = Depends(get_db), user: User = Depends(require_permissions("ai:use"))) -> AIResponse:
-    response, provider, fallback = await ai_generate(db, user, "chat", payload.message, payload.context)
-    return AIResponse(response=response, provider=provider, fallback=fallback)
+# ── AI Features ─────────────────────────────────────────────────────────
+
+@router.post("/ai/chat", tags=["ai"])
+async def ai_chat(
+    payload: AIChatRequest,
+    user: dict[str, Any] = Depends(require_permissions("ai:use")),
+) -> AIResponse:
+    return await ai_generate("chat", payload.message, user, payload.context)
 
 
-@router.post("/ai/report-summary", response_model=AIResponse, tags=["ai"])
-async def ai_report_summary(payload: AIChatRequest, db: Session = Depends(get_db), user: User = Depends(require_permissions("ai:use"))) -> AIResponse:
-    response, provider, fallback = await ai_generate(db, user, "report_summary", payload.message, {"dashboard": dashboard(db), **(payload.context or {})})
-    return AIResponse(response=response, provider=provider, fallback=fallback)
+@router.post("/ai/report-summary", tags=["ai"])
+async def ai_report_summary(
+    payload: AIChatRequest,
+    user: dict[str, Any] = Depends(require_permissions("ai:use")),
+) -> AIResponse:
+    context = {"dashboard": dashboard(), **(payload.context or {})}
+    return await ai_generate("report_summary", payload.message, user, context)
 
 
-@router.post("/ai/maintenance-prediction", response_model=AIResponse, tags=["ai"])
-async def ai_maintenance_prediction(payload: AIChatRequest, db: Session = Depends(get_db), user: User = Depends(require_permissions("ai:use"))) -> AIResponse:
-    response, provider, fallback = await ai_generate(db, user, "maintenance_prediction", payload.message, payload.context)
-    return AIResponse(response=response, provider=provider, fallback=fallback)
+@router.post("/ai/maintenance-prediction", tags=["ai"])
+async def ai_maintenance_prediction(
+    payload: AIChatRequest,
+    user: dict[str, Any] = Depends(require_permissions("ai:use")),
+) -> AIResponse:
+    return await ai_generate("maintenance_prediction", payload.message, user, payload.context)
 
 
-@router.post("/ai/asset-recommendation", response_model=AIResponse, tags=["ai"])
-async def ai_asset_recommendation(payload: AIChatRequest, db: Session = Depends(get_db), user: User = Depends(require_permissions("ai:use"))) -> AIResponse:
-    response, provider, fallback = await ai_generate(db, user, "asset_recommendation", payload.message, payload.context)
-    return AIResponse(response=response, provider=provider, fallback=fallback)
-
-
-@router.delete("/assets/{asset_id}", response_model=Message, tags=["assets"])
-def delete_asset(asset_id: str, db: Session = Depends(get_db), user: User = Depends(require_permissions("assets:write"))) -> Message:
-    from app.services import get_required
-
-    asset = get_required(db, Asset, asset_id)
-    asset.deleted_at = datetime.now(UTC)
-    activity(db, user, "asset.deleted", "asset", asset.id)
-    db.commit()
-    return Message(message="Asset deleted")
+@router.post("/ai/asset-recommendation", tags=["ai"])
+async def ai_asset_recommendation(
+    payload: AIChatRequest,
+    user: dict[str, Any] = Depends(require_permissions("ai:use")),
+) -> AIResponse:
+    return await ai_generate("asset_recommendation", payload.message, user, payload.context)

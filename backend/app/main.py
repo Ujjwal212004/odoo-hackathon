@@ -1,3 +1,5 @@
+"""AssetFlow API — application factory and middleware."""
+
 import json
 import logging
 import time
@@ -8,12 +10,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
 
 from app.config import get_settings
-from app.database import SessionLocal, create_schema
+from app.database import get_store, seed_defaults
 from app.routes import router
-from app.services import seed_defaults
 
 
 class JsonFormatter(logging.Formatter):
@@ -35,12 +35,18 @@ def create_app() -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
-        create_schema()
-        with SessionLocal() as db:
-            seed_defaults(db)
+        store = get_store()
+        seed_defaults(store)
+        logger.info("AssetFlow backend started — database ready")
         yield
 
-    app = FastAPI(title=settings.app_name, version="1.0.0", openapi_url="/api/v1/openapi.json", docs_url="/docs", lifespan=lifespan)
+    app = FastAPI(
+        title=settings.app_name,
+        version="1.0.0",
+        openapi_url="/api/v1/openapi.json",
+        docs_url="/docs",
+        lifespan=lifespan,
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
@@ -74,11 +80,6 @@ def create_app() -> FastAPI:
             )
         )
         return response
-
-    @app.exception_handler(SQLAlchemyError)
-    async def database_exception_handler(_request: Request, exc: SQLAlchemyError):
-        logger.exception("database_error", exc_info=exc)
-        return JSONResponse(status_code=500, content={"detail": "Database error"})
 
     @app.exception_handler(Exception)
     async def unhandled_exception_handler(_request: Request, exc: Exception):
